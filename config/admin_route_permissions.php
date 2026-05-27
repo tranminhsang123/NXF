@@ -106,6 +106,14 @@ return [
         'admin.content-ops.publish-requests.reject' => 'content_ops.edit',
         'admin.content-ops.restore' => 'content_ops.edit',
 
+        'admin.content-studio.index' => 'content_ops.view',
+        'admin.content-studio.preview' => 'content_ops.view',
+        'admin.content-studio.compare' => 'content_ops.view',
+        'admin.content-studio.template' => 'content_ops.edit',
+        'admin.content-studio.import' => 'content_ops.edit',
+        'admin.content-studio.generate-quiz' => 'content_ops.edit',
+        'admin.content-studio.generate-flashcards' => 'content_ops.edit',
+
         'admin.audio.index' => 'audio.view',
         'admin.audio.generate' => 'audio.manage',
         'admin.audio.bulk-generate' => 'audio.manage',

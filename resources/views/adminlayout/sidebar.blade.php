@@ -86,6 +86,18 @@
         </a>
         @endadminCan
 
+        @adminCan('content_ops.view')
+        <a href="{{ route('admin.content-studio.index') }}"
+           class="flex items-center px-6 py-3 {{ request()->routeIs('admin.content-studio.*') ? 'bg-red-600/90 border-l-4 border-red-400' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+            <svg class="mr-3 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                <path d="M15 5l3 3"></path>
+            </svg>
+            Xưởng nội dung
+        </a>
+        @endadminCan
+
         @adminCan('content_reports.view')
         <a href="{{ route('admin.content-reports.index') }}"
            class="flex items-center px-6 py-3 {{ request()->routeIs('admin.content-reports.*') ? 'bg-red-600/90 border-l-4 border-red-400' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">

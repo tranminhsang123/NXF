@@ -290,6 +290,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/bai-{number}/quiz', [App\Http\Controllers\MinnaController::class, 'submitQuiz'])
             ->middleware('throttle:study-post')
             ->name('quiz.submit');
+
+        Route::post('/bai-{number}/ai-tutor', App\Http\Controllers\AiTutorController::class)
+            ->middleware('throttle:study-post')
+            ->name('ai-tutor');
     });
 });
 
@@ -316,6 +320,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'admin.rout
     Route::post('content-ops/publish-requests/{publishRequest}/reject', [App\Http\Controllers\Admin\ContentOperationsController::class, 'rejectRequest'])->name('content-ops.publish-requests.reject');
     Route::get('content-ops/{type}/{id}/versions', [App\Http\Controllers\Admin\ContentOperationsController::class, 'versions'])->name('content-ops.versions');
     Route::post('content-ops/versions/{version}/restore', [App\Http\Controllers\Admin\ContentOperationsController::class, 'restore'])->name('content-ops.restore');
+    Route::get('content-studio', [App\Http\Controllers\Admin\ContentStudioController::class, 'index'])->name('content-studio.index');
+    Route::post('content-studio/template', [App\Http\Controllers\Admin\ContentStudioController::class, 'createFromTemplate'])->name('content-studio.template');
+    Route::post('content-studio/import', [App\Http\Controllers\Admin\ContentStudioController::class, 'import'])->name('content-studio.import');
+    Route::post('content-studio/{lesson}/generate-quiz', [App\Http\Controllers\Admin\ContentStudioController::class, 'generateQuiz'])->name('content-studio.generate-quiz');
+    Route::post('content-studio/{lesson}/generate-flashcards', [App\Http\Controllers\Admin\ContentStudioController::class, 'generateFlashcards'])->name('content-studio.generate-flashcards');
+    Route::get('content-studio/{lesson}/preview-user', [App\Http\Controllers\Admin\ContentStudioController::class, 'preview'])->name('content-studio.preview');
+    Route::get('content-studio/{lesson}/compare', [App\Http\Controllers\Admin\ContentStudioController::class, 'compare'])->name('content-studio.compare');
     Route::get('audio', [App\Http\Controllers\Admin\AudioManagerController::class, 'index'])->name('audio.index');
     Route::post('audio/generate', [App\Http\Controllers\Admin\AudioManagerController::class, 'generate'])->name('audio.generate');
     Route::post('audio/bulk-generate', [App\Http\Controllers\Admin\AudioManagerController::class, 'bulkGenerate'])->name('audio.bulk-generate');

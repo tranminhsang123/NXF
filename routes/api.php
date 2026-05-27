@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MinnaLessonController;
 use App\Http\Controllers\Api\PronunciationController;
 use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\UserLearningController;
+use App\Http\Controllers\AiTutorController;
 use App\Http\Controllers\FavoriteItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +69,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('minna')->group(function () {
         Route::get('/lessons', [MinnaLessonController::class, 'index']);
         Route::get('/lessons/{number}', [MinnaLessonController::class, 'show'])
+            ->whereNumber('number');
+        Route::post('/lessons/{number}/ai-tutor', AiTutorController::class)
+            ->middleware('throttle:study-post')
             ->whereNumber('number');
     });
 

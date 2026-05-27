@@ -21,6 +21,7 @@ class LearningEvent extends Model
     public const AUDIO_PLAYED = 'audio_played';
     public const POPUP_DICTIONARY_OPENED = 'popup_dictionary_opened';
     public const DASHBOARD_CTA_CLICKED = 'dashboard_cta_clicked';
+    public const AI_TUTOR_USED = 'ai_tutor_used';
 
     protected $fillable = [
         'user_id',
@@ -58,6 +59,7 @@ class LearningEvent extends Model
             self::AUDIO_PLAYED,
             self::POPUP_DICTIONARY_OPENED,
             self::DASHBOARD_CTA_CLICKED,
+            self::AI_TUTOR_USED,
         ];
     }
 

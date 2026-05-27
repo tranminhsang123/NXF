@@ -205,6 +205,8 @@
             </div>
         </div>
 
+        @include('components.ai-tutor', ['lesson' => $lesson])
+
         <div class="flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8">
             <!-- Sidebar Navigation -->
             <aside class="w-full lg:w-80 flex-shrink-0">

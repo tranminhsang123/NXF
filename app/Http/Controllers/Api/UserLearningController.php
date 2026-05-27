@@ -11,8 +11,11 @@ use App\Models\UserProgress;
 use App\Services\CourseService;
 use App\Services\FlashcardService;
 use App\Services\KanjiService;
+use App\Services\PracticalTopicService;
 use App\Services\StatisticsService;
 use App\Services\UserDashboardService;
+use App\Services\UserMistakeService;
+use App\Services\WeeklyGoalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
@@ -38,6 +41,35 @@ class UserLearningController extends Controller
             ->paginate($perPage);
 
         return response()->json($progresses);
+    }
+
+    public function mistakes(Request $request, UserMistakeService $mistakeService): JsonResponse
+    {
+        return response()->json($mistakeService->build($request->user()));
+    }
+
+    public function weeklyGoal(Request $request, WeeklyGoalService $weeklyGoalService): JsonResponse
+    {
+        return response()->json($weeklyGoalService->build($request->user()));
+    }
+
+    public function practicalTopics(Request $request, PracticalTopicService $topicService): JsonResponse
+    {
+        return response()->json([
+            'topics' => $topicService->all(),
+            'recommended' => $topicService->recommendedFor($request->user()),
+        ]);
+    }
+
+    public function practicalTopic(Request $request, PracticalTopicService $topicService, string $slug): JsonResponse
+    {
+        $topic = $topicService->find($slug);
+
+        if (! $topic) {
+            return response()->json(['message' => 'Không tìm thấy chủ đề.'], 404);
+        }
+
+        return response()->json(['topic' => $topic]);
     }
 
     public function statistics(Request $request, StatisticsService $statisticsService): JsonResponse

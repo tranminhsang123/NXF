@@ -8,11 +8,13 @@ use App\Models\SystemLog;
 use App\Models\User;
 use App\Services\OnboardingQuickWinService;
 use App\Support\OnboardingOptions;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -188,16 +190,27 @@ class AuthController extends Controller
                 ->withErrors(['email' => 'Không nhận được mã xác thực từ Google.']);
         }
 
-        $tokenResponse = $this->googleHttpClient()
-            ->asForm()
-            ->timeout(15)
-            ->post('https://oauth2.googleapis.com/token', [
-                'code' => $code,
-                'client_id' => (string) config('services.google.client_id'),
-                'client_secret' => (string) config('services.google.client_secret'),
-                'redirect_uri' => (string) config('services.google.redirect'),
-                'grant_type' => 'authorization_code',
+        try {
+            $tokenResponse = $this->googleHttpClient()
+                ->asForm()
+                ->timeout(15)
+                ->post('https://oauth2.googleapis.com/token', [
+                    'code' => $code,
+                    'client_id' => (string) config('services.google.client_id'),
+                    'client_secret' => (string) config('services.google.client_secret'),
+                    'redirect_uri' => (string) config('services.google.redirect'),
+                    'grant_type' => 'authorization_code',
+                ]);
+        } catch (ConnectionException $e) {
+            Log::warning('auth.google_token_connection_failed', [
+                'endpoint' => 'token',
+                'error' => $e->getMessage(),
             ]);
+
+            return redirect()
+                ->route('login')
+                ->withErrors(['email' => 'Không kết nối được Google để đăng nhập. Vui lòng kiểm tra mạng/proxy hoặc đăng nhập bằng email.']);
+        }
 
         if (! $tokenResponse->ok()) {
             return redirect()
@@ -212,11 +225,22 @@ class AuthController extends Controller
                 ->withErrors(['email' => 'Google không trả về ID token hợp lệ.']);
         }
 
-        $tokenInfo = $this->googleHttpClient()
-            ->timeout(10)
-            ->get('https://oauth2.googleapis.com/tokeninfo', [
-                'id_token' => $idToken,
+        try {
+            $tokenInfo = $this->googleHttpClient()
+                ->timeout(10)
+                ->get('https://oauth2.googleapis.com/tokeninfo', [
+                    'id_token' => $idToken,
+                ]);
+        } catch (ConnectionException $e) {
+            Log::warning('auth.google_token_connection_failed', [
+                'endpoint' => 'tokeninfo',
+                'error' => $e->getMessage(),
             ]);
+
+            return redirect()
+                ->route('login')
+                ->withErrors(['email' => 'Không kết nối được Google để đăng nhập. Vui lòng kiểm tra mạng/proxy hoặc đăng nhập bằng email.']);
+        }
 
         if (! $tokenInfo->ok()) {
             return redirect()
@@ -290,6 +314,11 @@ class AuthController extends Controller
     private function googleHttpClient(): PendingRequest
     {
         $request = Http::acceptJson();
+        $proxy = trim((string) config('services.google.http_proxy', ''));
+
+        $request = $request->withOptions([
+            'proxy' => $proxy !== '' ? $proxy : '',
+        ]);
 
         if (! (bool) config('services.google.verify_ssl', true)) {
             $request = $request->withoutVerifying();

@@ -8,10 +8,13 @@ use App\Models\SecuritySetting;
 use App\Models\SystemLog;
 use App\Models\User;
 use App\Support\OnboardingOptions;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -138,11 +141,22 @@ class AuthController extends Controller
             'device_name' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $tokenInfo = Http::timeout(10)
-            ->acceptJson()
-            ->get('https://oauth2.googleapis.com/tokeninfo', [
-                'id_token' => $data['id_token'],
+        try {
+            $tokenInfo = $this->googleHttpClient()
+                ->timeout(10)
+                ->get('https://oauth2.googleapis.com/tokeninfo', [
+                    'id_token' => $data['id_token'],
+                ]);
+        } catch (ConnectionException $e) {
+            Log::warning('api.auth.google_token_connection_failed', [
+                'endpoint' => 'tokeninfo',
+                'error' => $e->getMessage(),
             ]);
+
+            throw ValidationException::withMessages([
+                'id_token' => ['Không kết nối được Google để đăng nhập. Vui lòng kiểm tra mạng/proxy.'],
+            ]);
+        }
 
         if (! $tokenInfo->ok()) {
             throw ValidationException::withMessages([
@@ -220,5 +234,21 @@ class AuthController extends Controller
             'role' => $user->role,
             'onboarding' => OnboardingOptions::summaryFor($user),
         ];
+    }
+
+    private function googleHttpClient(): PendingRequest
+    {
+        $request = Http::acceptJson();
+        $proxy = trim((string) config('services.google.http_proxy', ''));
+
+        $request = $request->withOptions([
+            'proxy' => $proxy !== '' ? $proxy : '',
+        ]);
+
+        if (! (bool) config('services.google.verify_ssl', true)) {
+            $request = $request->withoutVerifying();
+        }
+
+        return $request;
     }
 }

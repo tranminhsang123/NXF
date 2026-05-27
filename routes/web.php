@@ -119,6 +119,18 @@ Route::get('/pronunciation/resolve', [App\Http\Controllers\PronunciationControll
     ->middleware('throttle:study-get')
     ->name('pronunciation.resolve');
 
+Route::prefix('chu-de')->name('topics.')->group(function () {
+    Route::get('/', [App\Http\Controllers\PracticalTopicController::class, 'index'])
+        ->middleware('throttle:study-get')
+        ->name('index');
+    Route::get('/{slug}', [App\Http\Controllers\PracticalTopicController::class, 'show'])
+        ->middleware('throttle:study-get')
+        ->name('show');
+    Route::post('/{slug}/quiz', [App\Http\Controllers\PracticalTopicController::class, 'submitQuiz'])
+        ->middleware('throttle:study-post')
+        ->name('quiz');
+});
+
 Route::middleware('auth')->group(function () {
     // Báo cáo vi phạm DevTools (chỉ user thường; admin không bị ghi)
     Route::post('/devtools-violation', [App\Http\Controllers\DevtoolsViolationController::class, '__invoke'])
@@ -164,6 +176,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard/progress', [App\Http\Controllers\UserController::class, 'progress'])
         ->name('user.progress');
+
+    Route::get('/dashboard/mistakes', [App\Http\Controllers\UserMistakeController::class, 'index'])
+        ->middleware('throttle:study-get')
+        ->name('user.mistakes');
 
     Route::get('/dashboard/statistics', [App\Http\Controllers\UserController::class, 'statistics'])
         ->name('user.statistics');

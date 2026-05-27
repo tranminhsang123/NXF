@@ -48,6 +48,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('learning')->group(function () {
         Route::get('/dashboard', [UserLearningController::class, 'dashboard']);
         Route::get('/progress', [UserLearningController::class, 'progress']);
+        Route::get('/mistakes', [UserLearningController::class, 'mistakes']);
+        Route::get('/weekly-goal', [UserLearningController::class, 'weeklyGoal']);
+        Route::get('/topics', [UserLearningController::class, 'practicalTopics']);
+        Route::get('/topics/{slug}', [UserLearningController::class, 'practicalTopic']);
         Route::get('/statistics', [UserLearningController::class, 'statistics']);
         Route::get('/kanji/levels', [UserLearningController::class, 'kanjiLevels']);
         Route::get('/kanji/{level}', [UserLearningController::class, 'kanjiList']);

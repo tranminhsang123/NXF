@@ -42,6 +42,10 @@
                 $reasonVocab = $reasonFocus['vocabulary'] ?? [];
                 $weakQuizLessons = $weakSuggestions['weak_quiz'] ?? [];
                 $behaviorProfile = $weakSuggestions['behavior_profile'] ?? [];
+                $weekly = $weeklyGoal ?? [];
+                $weeklyMetrics = $weekly['metrics'] ?? [];
+                $weeklySummary = $weekly['summary'] ?? [];
+                $nextWeekPlan = $weekly['next_week_plan'] ?? [];
             @endphp
 
             @if($streakAtRisk ?? false)
@@ -100,6 +104,190 @@
                                 @endforeach
                             </div>
                         </div>
+                    </div>
+                </div>
+            @endif
+
+            @if(!empty($weekly))
+                <div class="mb-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
+                    <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wide text-red-600">Mục tiêu tuần</p>
+                            <h2 class="mt-2 text-2xl font-extrabold text-gray-950">Tuần {{ $weekly['week_label'] ?? '' }}</h2>
+                            <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
+                                {{ $weeklySummary['message'] ?? 'Theo dõi bài học, flashcard, quiz và số ngày giữ streak trong tuần.' }}
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                @forelse(($weeklySummary['wins'] ?? []) as $win)
+                                    <span class="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700">Đã xong {{ $win }}</span>
+                                @empty
+                                    <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                                        Ưu tiên: {{ $weeklySummary['focus_label'] ?? 'Học bài' }}
+                                    </span>
+                                @endforelse
+                            </div>
+                        </div>
+                        <div class="w-full lg:max-w-xs">
+                            <div class="rounded-2xl bg-slate-950 p-5 text-white">
+                                <div class="flex items-end justify-between">
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-300">% hoàn thành tuần</p>
+                                        <p class="mt-1 text-4xl font-black">{{ $weekly['percent'] ?? 0 }}%</p>
+                                    </div>
+                                    <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-red-100">
+                                        {{ $weeklySummary['title'] ?? 'Tổng kết tuần' }}
+                                    </span>
+                                </div>
+                                <div class="mt-4 h-3 overflow-hidden rounded-full bg-white/10">
+                                    <div class="h-3 rounded-full bg-red-500" style="width: {{ min(100, (int) ($weekly['percent'] ?? 0)) }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid gap-3 md:grid-cols-4">
+                        @foreach($weeklyMetrics as $metric)
+                            <a href="{{ $metric['url'] ?? '#' }}" class="rounded-xl border border-gray-200 bg-gray-50 p-4 hover:border-red-200 hover:bg-red-50">
+                                <div class="flex items-center justify-between gap-3">
+                                    <p class="text-sm font-bold text-gray-950">{{ $metric['label'] }}</p>
+                                    <span class="rounded-full {{ !empty($metric['done']) ? 'bg-green-100 text-green-700' : 'bg-white text-gray-600' }} px-2.5 py-1 text-xs font-bold">
+                                        {{ $metric['percent'] }}%
+                                    </span>
+                                </div>
+                                <p class="mt-3 text-2xl font-black text-gray-950">
+                                    {{ $metric['completed'] }}<span class="text-sm font-bold text-gray-500">/{{ $metric['target'] }} {{ $metric['unit'] }}</span>
+                                </p>
+                                <div class="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                                    <div class="h-2 rounded-full {{ !empty($metric['done']) ? 'bg-green-500' : 'bg-red-500' }}" style="width: {{ min(100, (int) $metric['percent']) }}%"></div>
+                                </div>
+                                @if(($metric['remaining'] ?? 0) > 0)
+                                    <p class="mt-2 text-xs font-semibold text-gray-500">Còn {{ $metric['remaining'] }} {{ $metric['unit'] }}</p>
+                                @else
+                                    <p class="mt-2 text-xs font-semibold text-green-700">Đã đạt mục tiêu</p>
+                                @endif
+                            </a>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-6 grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <p class="text-sm font-extrabold text-gray-950">Tổng kết cuối tuần</p>
+                            <p class="mt-2 text-sm leading-6 text-gray-600">
+                                Tập trung tiếp vào {{ $weeklySummary['focus_label'] ?? 'Học bài' }}
+                                @if(($weeklySummary['focus_remaining'] ?? 0) > 0)
+                                    còn {{ $weeklySummary['focus_remaining'] }} {{ $weeklySummary['focus_unit'] ?? '' }}.
+                                @else
+                                    để giữ nhịp ổn định.
+                                @endif
+                            </p>
+                            <p class="mt-2 text-xs font-semibold text-gray-500">
+                                Ngày đã học: {{ count($weekly['study_days'] ?? []) }}/7
+                            </p>
+                        </div>
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm font-extrabold text-gray-950">Gợi ý kế hoạch tuần sau</p>
+                                    <p class="mt-1 text-sm text-gray-600">Dựa trên phần còn thiếu của tuần này.</p>
+                                </div>
+                                <a href="{{ $nextWeekPlan['primary_url'] ?? route('minna.index') }}" class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-700">
+                                    Bắt đầu kế hoạch
+                                </a>
+                            </div>
+                            <div class="mt-4 grid gap-2 md:grid-cols-2">
+                                @foreach(($nextWeekPlan['focus'] ?? []) as $item)
+                                    <div class="rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-700">{{ $item }}</div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if(!empty($mistakeSummary ?? []))
+                <div class="mb-8 rounded-2xl border border-red-200 bg-white p-5 shadow-sm md:p-6">
+                    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wide text-red-600">Lỗi sai của tôi</p>
+                            <h2 class="mt-2 text-2xl font-extrabold text-gray-950">Ôn đúng phần đang yếu</h2>
+                            <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
+                                Từ vựng sai, ngữ pháp hay nhầm, bài điểm thấp và flashcard hay quên được gom vào một lộ trình sửa lỗi 5 phút/ngày.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-5 lg:min-w-[520px]">
+                            <div class="rounded-xl bg-red-50 p-3 text-center">
+                                <p class="text-xl font-black text-red-700">{{ $mistakeSummary['wrong_vocab_count'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-red-900">Từ sai</p>
+                            </div>
+                            <div class="rounded-xl bg-amber-50 p-3 text-center">
+                                <p class="text-xl font-black text-amber-700">{{ $mistakeSummary['wrong_grammar_count'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-amber-900">Ngữ pháp</p>
+                            </div>
+                            <div class="rounded-xl bg-blue-50 p-3 text-center">
+                                <p class="text-xl font-black text-blue-700">{{ $mistakeSummary['wrong_quiz_count'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-blue-900">Quiz sai</p>
+                            </div>
+                            <div class="rounded-xl bg-violet-50 p-3 text-center">
+                                <p class="text-xl font-black text-violet-700">{{ $mistakeSummary['low_lesson_count'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-violet-900">Bài yếu</p>
+                            </div>
+                            <div class="rounded-xl bg-emerald-50 p-3 text-center">
+                                <p class="text-xl font-black text-emerald-700">{{ $mistakeSummary['weak_flashcard_count'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-emerald-900">Thẻ quên</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+                        <a href="{{ route('user.mistakes') }}" class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700">
+                            Mở lộ trình sửa lỗi
+                        </a>
+                        <a href="{{ $mistakeSummary['review_url'] ?? route('flashcard.index') }}" class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50">
+                            Ôn lại ngay
+                        </a>
+                    </div>
+                </div>
+            @endif
+
+            @if(!empty($practicalTopicSummary ?? []))
+                <div class="mb-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
+                    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wide text-red-600">Chủ đề thực tế</p>
+                            <h2 class="mt-2 text-2xl font-extrabold text-gray-950">Học tiếng Nhật theo tình huống</h2>
+                            <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
+                                Gọi món, hỏi đường, check-in khách sạn, công việc, anime, du học và hội thoại đời sống với quiz, flashcard, audio và mini task 5 phút.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 lg:min-w-[360px]">
+                            <div class="rounded-xl bg-gray-50 p-3 text-center">
+                                <p class="text-xl font-black text-gray-950">{{ $practicalTopicSummary['total_topics'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-gray-600">Chủ đề</p>
+                            </div>
+                            <div class="rounded-xl bg-red-50 p-3 text-center">
+                                <p class="text-xl font-black text-red-700">{{ $practicalTopicSummary['total_vocabulary'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-red-900">Từ vựng</p>
+                            </div>
+                            <div class="rounded-xl bg-blue-50 p-3 text-center">
+                                <p class="text-xl font-black text-blue-700">{{ $practicalTopicSummary['total_dialogues'] ?? 0 }}</p>
+                                <p class="mt-1 text-xs font-semibold text-blue-900">Hội thoại</p>
+                            </div>
+                        </div>
+                    </div>
+                    @if(!empty($practicalTopicSummary['recommended']))
+                        <div class="mt-5 grid gap-3 md:grid-cols-3">
+                            @foreach($practicalTopicSummary['recommended'] as $topic)
+                                <a href="{{ $topic['url'] }}" class="rounded-xl border border-gray-200 bg-gray-50 p-4 hover:border-red-200 hover:bg-red-50">
+                                    <p class="text-xs font-bold uppercase tracking-wide text-gray-500">{{ $topic['level'] }}</p>
+                                    <p class="mt-1 font-extrabold text-gray-950">{{ $topic['title'] }}</p>
+                                    <p class="mt-2 text-xs leading-5 text-gray-600">{{ $topic['subtitle'] }}</p>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="mt-5">
+                        <a href="{{ $practicalTopicSummary['index_url'] ?? route('topics.index') }}" class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700">
+                            Mở chủ đề thực tế
+                        </a>
                     </div>
                 </div>
             @endif

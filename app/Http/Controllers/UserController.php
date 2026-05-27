@@ -6,7 +6,9 @@ use App\Models\MinnaSection;
 use App\Models\UserMinnaSectionProgress;
 use App\Models\UserProgress;
 use App\Services\StatisticsService;
+use App\Services\PracticalTopicService;
 use App\Services\UserDashboardService;
+use App\Services\UserMistakeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,12 +17,16 @@ class UserController extends Controller
     public function __construct(
         private StatisticsService $statisticsService,
         private UserDashboardService $dashboardService,
+        private UserMistakeService $mistakeService,
+        private PracticalTopicService $topicService,
     ) {}
 
     public function dashboard()
     {
         $user = Auth::user();
         $data = $this->dashboardService->getDashboardData($user);
+        $data['mistakeSummary'] = $this->mistakeService->summary($user);
+        $data['practicalTopicSummary'] = $this->topicService->summaryFor($user);
 
         return view('user.dashboard', $data);
     }

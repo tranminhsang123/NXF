@@ -19,6 +19,7 @@ class UserDashboardService
         private StatisticsService $statisticsService,
         private LearningReasonContentService $learningReasonContentService,
         private WeakLessonSuggestionService $weakLessonSuggestionService,
+        private WeeklyGoalService $weeklyGoalService,
     ) {}
 
     private const DASHBOARD_CACHE_TTL = 600; // 10 phút
@@ -161,6 +162,7 @@ class UserDashboardService
             $completedMinnaLessons,
             $dailyGoalTargetMinna
         );
+        $weeklyGoal = $this->weeklyGoalService->build($user);
 
         return [
             'user' => $user,
@@ -204,6 +206,7 @@ class UserDashboardService
             'reasonFocus' => $reasonFocus,
             'weakSuggestions' => $weakSuggestions,
             'advancedDashboard' => $advancedDashboard,
+            'weeklyGoal' => $weeklyGoal,
             'learningPlan' => [
                 'daily_goal' => [
                     'target_lessons' => $dailyGoalTargetMinna,

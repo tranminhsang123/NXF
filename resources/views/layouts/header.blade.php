@@ -34,7 +34,7 @@
 
                 <div class="relative group">
                     <button class="relative px-4 py-2 text-sm font-medium transition-all duration-300 flex items-center gap-1">
-                        <span class="{{ request()->routeIs('minna.*') || request()->routeIs('vocabulary.*') || request()->routeIs('flashcard.*') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
+                        <span class="{{ request()->routeIs('minna.*') || request()->routeIs('vocabulary.*') || request()->routeIs('flashcard.*') || request()->routeIs('topics.*') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
                             Học tập
                         </span>
                         <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,6 +47,7 @@
                             <a href="{{ route('minna.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Bài học Minna</a>
                             <a href="{{ route('vocabulary.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Từ vựng</a>
                             <a href="{{ route('flashcard.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Flashcard</a>
+                            <a href="{{ route('topics.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Chủ đề thực tế</a>
                         </div>
                     </div>
                 </div>
@@ -183,7 +184,7 @@
                 Tổng hợp JLPT
             </a>
 
-            <details class="group border border-gray-200 rounded-xl overflow-hidden" {{ request()->routeIs('minna.*') || request()->routeIs('vocabulary.*') || request()->routeIs('flashcard.*') ? 'open' : '' }}>
+            <details class="group border border-gray-200 rounded-xl overflow-hidden" {{ request()->routeIs('minna.*') || request()->routeIs('vocabulary.*') || request()->routeIs('flashcard.*') || request()->routeIs('topics.*') ? 'open' : '' }}>
                 <summary class="list-none cursor-pointer flex items-center justify-between px-4 py-3 bg-white text-gray-800 font-medium">
                     <span class="inline-flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,6 +208,10 @@
                     <a href="{{ route('flashcard.index') }}"
                        class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('flashcard.*') ? 'bg-red-50 text-red-600' : 'text-gray-700 hover:bg-white hover:text-red-600' }}">
                         Flashcard
+                    </a>
+                    <a href="{{ route('topics.index') }}"
+                       class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 {{ request()->routeIs('topics.*') ? 'bg-red-50 text-red-600' : 'text-gray-700 hover:bg-white hover:text-red-600' }}">
+                        Chủ đề thực tế
                     </a>
                 </div>
             </details>

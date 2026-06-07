@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Kanji;
 use App\Models\MinnaLesson;
 use App\Models\MinnaSection;
 use App\Models\N5CourseData;
 use App\Models\UserProgress;
 use App\Services\CourseService;
 use App\Services\FlashcardService;
+use App\Services\GlobalSearchService;
 use App\Services\KanjiService;
 use App\Services\PracticalTopicService;
 use App\Services\StatisticsService;
@@ -272,82 +272,19 @@ class UserLearningController extends Controller
         ]);
     }
 
-    public function search(Request $request): JsonResponse
+    public function search(Request $request, GlobalSearchService $searchService): JsonResponse
     {
-        $query = trim((string) $request->query('q', ''));
-        $limit = max(1, min((int) $request->query('limit', 10), 50));
-
-        if ($query === '') {
-            return response()->json([
-                'lessons' => [],
-                'kanji' => [],
-                'vocabulary' => [],
-            ]);
-        }
-
-        $lessons = MinnaLesson::query()
-            ->published()
-            ->where(function ($q) use ($query) {
-                $q->where('title', 'like', '%'.$query.'%')
-                    ->orWhere('description', 'like', '%'.$query.'%');
-            })
-            ->orderBy('number')
-            ->limit($limit)
-            ->get(['id', 'number', 'title', 'description']);
-
-        $kanji = Kanji::query()
-            ->published()
-            ->where(function ($q) use ($query) {
-                $q->where('character', 'like', '%'.$query.'%')
-                    ->orWhere('meaning', 'like', '%'.$query.'%');
-            })
-            ->orderBy('level')
-            ->limit($limit)
-            ->get(['id', 'character', 'meaning', 'level']);
-
-        $vocabularySections = MinnaSection::query()
-            ->published()
-            ->where('key', 'tu-vung')
-            ->whereHas('lesson', fn ($q) => $q->published())
-            ->with('lesson:id,number,title')
-            ->limit(100)
-            ->get(['id', 'lesson_id', 'content']);
-
-        $vocabulary = [];
-        foreach ($vocabularySections as $section) {
-            $groups = is_array($section->content) ? $section->content : [];
-            foreach (['vocab', 'mau_cau', 'countries', 'proper_nouns', 'cau', 'places', 'rail'] as $groupKey) {
-                $items = $groups[$groupKey] ?? [];
-                if (! is_array($items)) {
-                    continue;
-                }
-                foreach ($items as $item) {
-                    $word = (string) ($item['tu_vung'] ?? $item['jp'] ?? '');
-                    $meaning = (string) ($item['nghia'] ?? '');
-                    if ($word === '' && $meaning === '') {
-                        continue;
-                    }
-                    if (stripos($word, $query) === false && stripos($meaning, $query) === false) {
-                        continue;
-                    }
-                    $vocabulary[] = [
-                        'lesson_number' => $section->lesson?->number,
-                        'lesson_title' => $section->lesson?->title,
-                        'word' => $word,
-                        'meaning' => $meaning,
-                        'group' => $groupKey,
-                    ];
-                    if (count($vocabulary) >= $limit) {
-                        break 3;
-                    }
-                }
-            }
-        }
-
-        return response()->json([
-            'lessons' => $lessons,
-            'kanji' => $kanji,
-            'vocabulary' => $vocabulary,
+        $data = $request->validate([
+            'q' => ['required', 'string', 'max:80'],
+            'limit' => ['nullable', 'integer', 'min:1', 'max:30'],
         ]);
+
+        if (mb_strlen(trim($data['q'])) < 2) {
+            return response()->json($searchService->search('', $request->user(), 1));
+        }
+
+        return response()->json(
+            $searchService->search($data['q'], $request->user(), (int) ($data['limit'] ?? 10))
+        );
     }
 }

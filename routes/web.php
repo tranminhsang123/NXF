@@ -119,6 +119,14 @@ Route::get('/pronunciation/resolve', [App\Http\Controllers\PronunciationControll
     ->middleware('throttle:study-get')
     ->name('pronunciation.resolve');
 
+Route::get('/tim-kiem', [App\Http\Controllers\SearchController::class, 'index'])
+    ->middleware('throttle:study-get')
+    ->name('search.index');
+
+Route::get('/api/search', [App\Http\Controllers\SearchController::class, 'api'])
+    ->middleware('throttle:study-get')
+    ->name('search.api');
+
 Route::prefix('chu-de')->name('topics.')->group(function () {
     Route::get('/', [App\Http\Controllers\PracticalTopicController::class, 'index'])
         ->middleware('throttle:study-get')

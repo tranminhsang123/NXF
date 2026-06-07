@@ -1,7 +1,7 @@
 <!-- Header -->
-<header class="fixed w-full top-0 bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200/50 z-50 transition-all duration-300" id="main-header">
+<header class="fixed w-full top-0 z-50 border-b border-gray-200/50 bg-white/95 shadow-md backdrop-blur-md transition-all duration-300 lg:rounded-b-2xl lg:border-x-0" id="main-header">
     <nav class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-20">
+        <div class="relative z-30 flex h-20 items-center justify-between">
             <!-- Logo Section -->
             <a href="{{ route('home') }}" class="flex items-center space-x-3 group flex-shrink-0">
                 <div class="relative">
@@ -19,21 +19,21 @@
             </a>
             
             <!-- Desktop Navigation -->
-            <div class="hidden lg:flex items-center space-x-1">
+            <div class="hidden lg:flex flex-1 items-center justify-center gap-1 min-w-0 px-4">
                 <a href="{{ route('home') }}"
-                   class="relative px-4 py-2 text-sm font-medium transition-all duration-300 group">
+                   class="relative inline-block px-4 py-2 text-sm font-medium transition-all duration-300 group nav-link">
                     <span class="relative z-10 {{ request()->routeIs('home') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
                         Trang chủ
                     </span>
                     @if(request()->routeIs('home'))
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full" aria-hidden="true"></span>
                     @else
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" aria-hidden="true"></span>
                     @endif
                 </a>
 
-                <div class="relative group">
-                    <button class="relative px-4 py-2 text-sm font-medium transition-all duration-300 flex items-center gap-1">
+                <div class="relative z-40 group hover:z-50">
+                    <button type="button" class="relative px-4 py-2 text-sm font-medium transition-all duration-300 flex items-center gap-1">
                         <span class="{{ request()->routeIs('minna.*') || request()->routeIs('vocabulary.*') || request()->routeIs('flashcard.*') || request()->routeIs('topics.*') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
                             Học tập
                         </span>
@@ -42,7 +42,7 @@
                         </svg>
                     </button>
 
-                    <div class="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1">
+                    <div class="absolute top-full left-0 z-50 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1">
                         <div class="py-1">
                             <a href="{{ route('minna.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Bài học Minna</a>
                             <a href="{{ route('vocabulary.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Từ vựng</a>
@@ -53,19 +53,19 @@
                 </div>
 
                 <a href="{{ route('course.index') }}"
-                   class="relative px-4 py-2 text-sm font-medium transition-all duration-300 group">
+                   class="relative inline-block px-4 py-2 text-sm font-medium transition-all duration-300 group nav-link">
                     <span class="relative z-10 {{ request()->routeIs('course.index') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
                         Tổng hợp N
                     </span>
                     @if(request()->routeIs('course.index'))
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full" aria-hidden="true"></span>
                     @else
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" aria-hidden="true"></span>
                     @endif
                 </a>
 
-                <div class="relative group">
-                    <button class="relative px-4 py-2 text-sm font-medium transition-all duration-300 flex items-center gap-1">
+                <div class="relative z-40 group hover:z-50">
+                    <button type="button" class="relative px-4 py-2 text-sm font-medium transition-all duration-300 flex items-center gap-1">
                         <span class="{{ request()->routeIs('alphabet.index') || request()->routeIs('kanji.*') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
                             Công cụ
                         </span>
@@ -74,7 +74,7 @@
                         </svg>
                     </button>
 
-                    <div class="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1">
+                    <div class="absolute top-full left-0 z-50 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1">
                         <div class="py-1">
                             <a href="{{ route('alphabet.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Bảng chữ cái</a>
                             <a href="{{ route('kanji.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">Ôn Kanji</a>
@@ -84,34 +84,34 @@
 
                 @auth
                 <a href="{{ route('chat.index') }}"
-                   class="relative px-4 py-2 text-sm font-medium transition-all duration-300 group">
+                   class="relative inline-block px-4 py-2 text-sm font-medium transition-all duration-300 group nav-link">
                     <span class="relative z-10 {{ request()->routeIs('chat.*') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
                         Chat nhóm
                     </span>
                     @if(request()->routeIs('chat.*'))
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full" aria-hidden="true"></span>
                     @else
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" aria-hidden="true"></span>
                     @endif
                 </a>
                 <a href="{{ route('inbox.index') }}"
-                   class="relative px-4 py-2 text-sm font-medium transition-all duration-300 group">
+                   class="relative inline-block px-4 py-2 text-sm font-medium transition-all duration-300 group nav-link">
                     <span class="relative z-10 inline-flex items-center gap-2 {{ request()->routeIs('inbox.*') ? 'text-red-600' : 'text-gray-700 group-hover:text-gray-900' }}">
                         <span>Nhắn tin</span>
                         <span id="inbox-unread-badge-desktop"
                               class="hidden min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold items-center justify-center">0</span>
                     </span>
                     @if(request()->routeIs('inbox.*'))
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full" aria-hidden="true"></span>
                     @else
-                        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center"></span>
+                        <span class="nav-link-underline absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-red-700 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" aria-hidden="true"></span>
                     @endif
                 </a>
                 @endauth
             </div>
             
             <!-- Right Section -->
-            <div class="flex items-center space-x-3">
+            <div class="ml-auto flex items-center gap-2 lg:gap-3">
                 @auth
                     <!-- User Menu Desktop - Icon tài khoản -->
                     <div class="hidden lg:flex items-center space-x-2">
@@ -146,24 +146,51 @@
                     </div>
                 @endauth
 
-                <!-- Mobile menu button -->
-                <button type="button"
-                        id="mobile-menu-toggle"
-                        class="lg:hidden inline-flex items-center justify-center w-10 h-10 text-gray-700 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 touch-manipulation disabled:opacity-60 disabled:pointer-events-none">
-                    <span class="sr-only">Mở menu</span>
-                    <svg id="menu-icon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                        <line x1="4" y1="7" x2="20" y2="7"></line>
-                        <line x1="4" y1="12" x2="20" y2="12"></line>
-                        <line x1="4" y1="17" x2="20" y2="17"></line>
-                    </svg>
-                    <svg id="close-icon" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+                {{-- Mobile: icon tìm kiếm sát menu --}}
+                <div class="flex lg:hidden items-center -space-x-1">
+                    <button type="button"
+                            id="mobile-search-toggle"
+                            class="inline-flex items-center justify-center w-10 h-10 text-gray-700 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 touch-manipulation"
+                            aria-expanded="false"
+                            aria-controls="mobile-search-panel"
+                            aria-label="Mở tìm kiếm">
+                        <svg id="mobile-search-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <svg id="mobile-search-close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+
+                    <button type="button"
+                            id="mobile-menu-toggle"
+                            class="inline-flex items-center justify-center w-10 h-10 text-gray-700 hover:bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 touch-manipulation disabled:opacity-60 disabled:pointer-events-none">
+                        <span class="sr-only">Mở menu</span>
+                        <svg id="menu-icon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <line x1="4" y1="7" x2="20" y2="7"></line>
+                            <line x1="4" y1="12" x2="20" y2="12"></line>
+                            <line x1="4" y1="17" x2="20" y2="17"></line>
+                        </svg>
+                        <svg id="close-icon" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
+
+        {{-- Thanh tìm kiếm PC: căn cùng mép logo ↔ nút phải, bo góc pill --}}
+        <div class="relative z-10 hidden lg:block pb-4">
+            @include('components.global-search-bar', ['variant' => 'header'])
+        </div>
     </nav>
+
+    {{-- Thanh tìm kiếm mobile: hiện khi bấm icon --}}
+    <div id="mobile-search-panel"
+         class="lg:hidden hidden border-t border-gray-200 bg-white px-4 py-3 shadow-sm">
+        @include('components.global-search-bar')
+    </div>
 
     <!-- Mobile menu panel: overflow-hidden + max-height transition để transitionend ổn định, tránh khựng khi spam nút menu -->
     <div id="mobile-menu-panel" class="lg:hidden hidden overflow-hidden bg-white border-t border-gray-200 shadow-xl transition-[max-height] duration-300 ease-out motion-reduce:transition-none">
@@ -314,19 +341,78 @@
     </div>
 </header>
 
-<!-- Spacer for fixed header -->
-<div class="h-20"></div>
+<!-- Spacer for fixed header (chiều cao đồng bộ với header) -->
+<div id="header-spacer" class="h-20"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const header = document.getElementById('main-header');
+        const headerSpacer = document.getElementById('header-spacer');
+        const searchToggle = document.getElementById('mobile-search-toggle');
+        const searchPanel = document.getElementById('mobile-search-panel');
+        const searchIcon = document.getElementById('mobile-search-icon');
+        const searchCloseIcon = document.getElementById('mobile-search-close-icon');
         const toggle = document.getElementById('mobile-menu-toggle');
         const panel = document.getElementById('mobile-menu-panel');
         const menuIcon = document.getElementById('menu-icon');
         const closeIcon = document.getElementById('close-icon');
+
+        let mobileSearchOpen = false;
+        let mobileMenuOpen = false;
+
+        function syncHeaderSpacer() {
+            if (!header || !headerSpacer) return;
+            headerSpacer.style.height = header.offsetHeight + 'px';
+        }
+
+        function setMobileSearchOpen(open) {
+            if (!searchPanel || !searchToggle) return;
+            mobileSearchOpen = open;
+            searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) {
+                searchPanel.classList.remove('hidden');
+                searchIcon?.classList.add('hidden');
+                searchCloseIcon?.classList.remove('hidden');
+                const input = searchPanel.querySelector('.global-search-input');
+                if (input) {
+                    requestAnimationFrame(function () { input.focus(); });
+                }
+            } else {
+                searchPanel.classList.add('hidden');
+                searchIcon?.classList.remove('hidden');
+                searchCloseIcon?.classList.add('hidden');
+            }
+            syncHeaderSpacer();
+        }
+
+        function closeMobileSearch() {
+            if (mobileSearchOpen) {
+                setMobileSearchOpen(false);
+            }
+        }
+
+        searchToggle?.addEventListener('click', function () {
+            if (panel && mobileMenuOpen) {
+                mobileMenuOpen = false;
+                panel.style.maxHeight = '0px';
+                panel.classList.add('hidden');
+                menuIcon?.classList.remove('hidden');
+                closeIcon?.classList.add('hidden');
+            }
+            setMobileSearchOpen(!mobileSearchOpen);
+        });
+
+        window.addEventListener('resize', syncHeaderSpacer);
+        syncHeaderSpacer();
+
+        @if(request()->routeIs('search.*') || request()->filled('q'))
+        if (window.matchMedia('(max-width: 1023px)').matches) {
+            setMobileSearchOpen(true);
+        }
+        @endif
         
         if (!toggle || !panel) return;
 
-        let mobileMenuOpen = false;
         let mobileMenuBusy = false;
         let mobileMenuFallbackTimer = null;
 
@@ -354,6 +440,7 @@
                 menuIcon.classList.remove('hidden');
                 closeIcon.classList.add('hidden');
             }
+            syncHeaderSpacer();
         }
 
         panel.addEventListener('transitionend', onMobilePanelTransitionEnd);
@@ -366,6 +453,8 @@
             clearMobileMenuFallback();
             setMobileMenuBusy(true);
 
+            closeMobileSearch();
+
             if (!mobileMenuOpen) {
                 mobileMenuOpen = true;
                 panel.classList.remove('hidden');
@@ -375,6 +464,7 @@
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
                         panel.style.maxHeight = panel.scrollHeight + 'px';
+                        syncHeaderSpacer();
                     });
                 });
             } else {
@@ -399,7 +489,6 @@
 
         // Header scroll effect
         let lastScroll = 0;
-        const header = document.getElementById('main-header');
         
         window.addEventListener('scroll', function() {
             const currentScroll = window.pageYOffset;

@@ -127,10 +127,25 @@ export type ProgressItem = {
   };
 };
 
+export type SearchVocabItem = {
+  term: string;
+  reading?: string;
+  meaning: string;
+  lesson_number?: number;
+  lesson_title?: string;
+  group?: string;
+};
+
 export type SearchResponse = {
-  lessons: Array<{ id: number; number: number; title: string; description?: string | null }>;
-  kanji: Array<{ id: number; character: string; meaning: string; level: string }>;
-  vocabulary: Array<{ lesson_number: number; lesson_title: string; word: string; meaning: string; group: string }>;
+  query: string;
+  vocabulary: SearchVocabItem[];
+  kanji: Array<{ id: number; character: string; meaning: string; level: string; url?: string }>;
+  lessons: Array<{ id: number; number: number; title: string; description?: string | null; url?: string }>;
+  sentence_patterns: Array<{ pattern: string; meaning: string; lesson_number?: number }>;
+  grammar: Array<{ title: string; pattern?: string; explain?: string; lesson_number?: number }>;
+  favorites: Array<{ id: number; front: string; back: string; item_type?: string; lesson_number?: number | null }>;
+  related: Array<{ type: string; reason?: string; item: Record<string, unknown>; url?: string }>;
+  counts: Record<string, number>;
 };
 
 export type LearningStatisticsResponse = {

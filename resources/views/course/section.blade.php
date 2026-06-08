@@ -21,38 +21,39 @@
         }
         .japanese-text {
             font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
-            font-size: 1.2em;
+            line-height: 1.75;
+            overflow-wrap: break-word;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50 text-slate-900">
     @include('layouts.header')
 
-    <!-- Hero Section -->
-    <section class="pt-24 pb-12 {{ $courseData['bgColor'] }}">
-        <div class="container mx-auto max-w-7xl px-4 md:px-6">
-            <div class="mb-8">
-                <a href="{{ route('course.show', $level) }}" class="inline-flex items-center text-gray-700 hover:text-gray-900 transition mb-6 group font-medium">
-                    <svg class="w-5 h-5 mr-1 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <main>
+        <section class="border-b border-slate-200 bg-white">
+            <div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+                <a href="{{ route('course.show', $level) }}" class="inline-flex items-center text-sm font-bold text-slate-600 hover:text-slate-950">
+                    <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                    <span>Quay lại {{ $level }}</span>
+                    {{ $level }}
                 </a>
-                <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-3 text-center">
-                    {{ $sectionTitle }}
-                </h1>
+                <p class="mt-5 text-sm font-bold text-red-600">Nội dung khóa học</p>
+                <h1 class="mt-1 break-words text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{{ $sectionTitle }}</h1>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Content Section -->
-    <section class="py-12">
-        <div class="container mx-auto max-w-7xl px-4 md:px-6">
-            <!-- This section is only for speed_master_n5 which now redirects to list view -->
-        </div>
-    </section>
+        <section class="py-6 sm:py-8">
+            <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div class="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+                    <p class="text-lg font-black text-slate-950">Phần học này đang được sắp xếp lại</p>
+                    <p class="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">Các phần N5 hiện đã được đưa về dạng danh sách bài học để dễ học hơn trên mobile.</p>
+                    <a href="{{ route('course.show', $level) }}" class="mt-5 inline-flex items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-red-700">Về {{ $level }}</a>
+                </div>
+            </div>
+        </section>
+    </main>
 
     @include('layouts.footer')
 </body>
 </html>
-

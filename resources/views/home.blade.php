@@ -14,12 +14,17 @@
             box-sizing: border-box;
         }
         
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
         html, body {
             overflow-x: clip;
         }
 
         body {
             font-family: 'Inter', sans-serif;
+            color: #111827;
         }
         
         /* Sakura Animation */
@@ -42,6 +47,7 @@
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
             animation: sakura-fall 8s infinite linear;
             z-index: -1;
+            pointer-events: none;
         }
         
         /* Text gradient */
@@ -85,6 +91,43 @@
         .pattern-bg {
             background-image: radial-gradient(circle, #fee2e2 1px, transparent 1px);
             background-size: 30px 30px;
+        }
+
+        .mobile-snap {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .mobile-snap::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .sakura {
+                display: none;
+            }
+
+            .card-hover:hover {
+                transform: none;
+                box-shadow: inherit;
+            }
+
+            .hero-card-float,
+            .hero-cta-main {
+                animation: none;
+            }
+
+            .pattern-bg {
+                background-size: 22px 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .sakura,
+            .hero-card-float,
+            .hero-cta-main {
+                animation: none;
+            }
         }
     </style>
 </head>

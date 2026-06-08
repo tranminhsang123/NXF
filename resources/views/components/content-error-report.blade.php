@@ -48,13 +48,14 @@
 @if($contentReportEnabled)
 <button type="button"
         id="content-report-open"
-        class="fixed left-4 bottom-4 z-40 inline-flex h-11 items-center gap-2 rounded-full bg-gray-900 px-4 text-sm font-semibold text-white shadow-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        class="fixed left-4 bottom-4 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+        aria-label="Báo lỗi nội dung"
+        title="Báo lỗi nội dung">
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 9v4"></path>
         <path d="M12 17h.01"></path>
         <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path>
     </svg>
-    Báo lỗi
 </button>
 
 <div id="content-report-modal" class="fixed inset-0 z-50 hidden">

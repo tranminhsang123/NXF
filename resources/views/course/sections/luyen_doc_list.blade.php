@@ -13,65 +13,63 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50 text-slate-900">
     @include('layouts.header')
 
-    <!-- Hero Section -->
-    <section class="pt-24 pb-12 {{ $courseData['bgColor'] }}">
-        <div class="container mx-auto max-w-7xl px-4 md:px-6">
-            <div class="mb-8">
-                <a href="{{ route('course.show', $level) }}" class="inline-flex items-center text-gray-700 hover:text-gray-900 transition mb-6 group font-medium">
-                    <svg class="w-5 h-5 mr-1 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <main>
+        <section class="border-b border-slate-200 bg-white">
+            <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+                <a href="{{ route('course.show', $level) }}" class="inline-flex items-center text-sm font-bold text-slate-600 hover:text-slate-950">
+                    <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                    <span>Quay lại {{ $level }}</span>
+                    {{ $level }}
                 </a>
-                <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-3 text-center">
-                    Luyện đọc
-                </h1>
-                <p class="text-center text-gray-600">Rèn luyện kỹ năng đọc hiểu qua các bài đọc đa dạng</p>
+                <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-sm font-bold text-red-600">Danh sách bài</p>
+                        <h1 class="mt-1 text-3xl font-black tracking-tight text-slate-950">Luyện đọc</h1>
+                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Rèn luyện đọc hiểu qua các bài đọc ngắn, câu hỏi và giải thích đáp án.</p>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                        <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Số bài</p>
+                        <p class="mt-1 text-2xl font-black text-slate-950">{{ $lessons->count() }}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Lessons List -->
-    <section class="py-12">
-        <div class="container mx-auto max-w-5xl px-4 md:px-6 lg:px-8">
-            <div class="space-y-3 md:space-y-4">
+        <section class="py-6 sm:py-8">
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
                 @foreach($lessons as $index => $lesson)
                     <a href="{{ route('course.luyen-doc.detail', ['level' => $level, 'id' => $lesson->id]) }}" 
-                       class="block bg-white rounded-lg p-5 md:p-6 shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-200 hover:border-red-300 group">
-                        <div class="flex items-center justify-between">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-4">
-                                    <span class="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-red-600 text-white rounded-lg flex items-center justify-center font-bold text-base md:text-lg group-hover:bg-red-700 transition">
-                                        {{ $index + 1 }}
-                                    </span>
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="text-lg md:text-xl font-semibold text-gray-900 group-hover:text-red-600 transition mb-1 break-words">
-                                            {{ $lesson->title }}
-                                        </h3>
-                                        <p class="text-sm md:text-base text-gray-600">{{ $lesson->bai }}</p>
-                                    </div>
-                                </div>
+                       class="group mb-3 block rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-red-200 hover:bg-red-50 hover:shadow-md sm:p-5">
+                        <div class="flex items-center gap-4">
+                            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-red-600 text-base font-black text-white group-hover:bg-red-700">
+                                {{ $index + 1 }}
+                            </span>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ $lesson->bai }}</p>
+                                <h2 class="mt-1 break-words text-base font-black text-slate-950 group-hover:text-red-700 sm:text-lg">
+                                    {{ $lesson->title }}
+                                </h2>
                             </div>
-                            <svg class="w-6 h-6 text-gray-400 group-hover:text-red-600 transition flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="h-5 w-5 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </a>
                 @endforeach
-            </div>
 
-            @if($lessons->isEmpty())
-                <div class="bg-gray-50 rounded-lg p-8 text-center">
-                    <p class="text-gray-500">Chưa có bài luyện đọc</p>
-                </div>
-            @endif
-        </div>
-    </section>
+                @if($lessons->isEmpty())
+                    <div class="rounded-xl border border-slate-200 bg-white p-8 text-center">
+                        <p class="text-slate-500">Chưa có bài luyện đọc</p>
+                    </div>
+                @endif
+            </div>
+        </section>
+    </main>
 
     @include('layouts.footer')
 </body>
 </html>
-

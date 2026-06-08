@@ -1,17 +1,17 @@
 <!-- Header -->
 <header class="fixed w-full top-0 z-50 border-b border-gray-200/50 bg-white/95 shadow-md backdrop-blur-md transition-all duration-300 lg:rounded-b-2xl lg:border-x-0" id="main-header">
     <nav class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="relative z-30 flex h-20 items-center justify-between">
+        <div class="relative z-30 flex h-16 items-center justify-between lg:h-20">
             <!-- Logo Section -->
             <a href="{{ route('home') }}" class="flex items-center space-x-3 group flex-shrink-0">
                 <div class="relative">
                     <div class="absolute inset-0 bg-gradient-to-br from-red-600 to-red-700 rounded-xl blur opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <img src="{{ $siteLogoUrl ?? asset('images/logo/yamato.jpg') }}"
                          alt="Logo"
-                         class="relative w-14 h-14 rounded-xl object-cover ring-2 ring-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                         class="relative h-11 w-11 rounded-xl object-cover ring-2 ring-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 lg:h-14 lg:w-14">
                 </div>
                 <div class="block">
-                    <h1 class="max-w-[140px] truncate text-xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent group-hover:from-red-600 group-hover:to-red-700 transition-all duration-300 sm:max-w-none xl:text-2xl">
+                    <h1 class="max-w-[124px] truncate bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-lg font-bold text-transparent transition-all duration-300 group-hover:from-red-600 group-hover:to-red-700 sm:max-w-none lg:text-xl xl:text-2xl">
                         {{ $siteLogoTitle ?? '日本語' }}
                     </h1>
                     <p class="hidden text-xs text-gray-500 font-medium xl:block">{{ $siteLogoSubtitle ?? 'Học tiếng Nhật hiệu quả' }}</p>
@@ -193,7 +193,7 @@
     </div>
 
     <!-- Mobile menu panel: overflow-hidden + max-height transition để transitionend ổn định, tránh khựng khi spam nút menu -->
-    <div id="mobile-menu-panel" class="lg:hidden hidden overflow-hidden bg-white border-t border-gray-200 shadow-xl transition-[max-height] duration-300 ease-out motion-reduce:transition-none">
+    <div id="mobile-menu-panel" class="lg:hidden hidden overflow-x-hidden overflow-y-auto bg-white border-t border-gray-200 shadow-xl transition-[max-height] duration-300 ease-out overscroll-contain motion-reduce:transition-none">
         <div class="px-4 pt-4 pb-6 space-y-2">
             <a href="{{ route('home') }}"
                class="flex items-center px-4 py-3 rounded-lg text-base font-medium transition-all duration-300 {{ request()->routeIs('home') ? 'bg-red-50 text-red-600' : 'text-gray-700 hover:bg-gray-50 hover:text-red-600' }}">
@@ -342,7 +342,7 @@
 </header>
 
 <!-- Spacer for fixed header (chiều cao đồng bộ với header) -->
-<div id="header-spacer" class="h-20"></div>
+<div id="header-spacer" class="h-16 lg:h-20"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -402,7 +402,10 @@
             setMobileSearchOpen(!mobileSearchOpen);
         });
 
-        window.addEventListener('resize', syncHeaderSpacer);
+        window.addEventListener('resize', function () {
+            syncHeaderSpacer();
+            syncMobileMenuHeight();
+        });
         syncHeaderSpacer();
 
         @if(request()->routeIs('search.*') || request()->filled('q'))
@@ -427,6 +430,20 @@
             mobileMenuBusy = busy;
             toggle.disabled = busy;
             toggle.setAttribute('aria-busy', busy ? 'true' : 'false');
+        }
+
+        function getMobileMenuMaxHeight() {
+            const navShell = header?.querySelector('nav > div');
+            const reservedHeight = navShell ? navShell.offsetHeight : 64;
+            return Math.max(280, window.innerHeight - reservedHeight);
+        }
+
+        function syncMobileMenuHeight() {
+            if (!mobileMenuOpen || !panel) {
+                return;
+            }
+            panel.style.maxHeight = Math.min(panel.scrollHeight, getMobileMenuMaxHeight()) + 'px';
+            syncHeaderSpacer();
         }
 
         function onMobilePanelTransitionEnd(e) {
@@ -463,8 +480,7 @@
                 panel.style.maxHeight = '0px';
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
-                        panel.style.maxHeight = panel.scrollHeight + 'px';
-                        syncHeaderSpacer();
+                        syncMobileMenuHeight();
                     });
                 });
             } else {
@@ -484,6 +500,7 @@
                     menuIcon.classList.remove('hidden');
                     closeIcon.classList.add('hidden');
                 }
+                syncHeaderSpacer();
             }, 400);
         });
 

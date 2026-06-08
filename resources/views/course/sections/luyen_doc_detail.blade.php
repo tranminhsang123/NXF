@@ -14,94 +14,90 @@
         .japanese-text {
             font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
             line-height: 1.8;
-            word-break: keep-all;
+            word-break: normal;
             overflow-wrap: break-word;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50 text-slate-900">
     @include('layouts.header')
 
-    <!-- Hero Section -->
-    <section class="pt-24 pb-12 {{ $courseData['bgColor'] }}">
-        <div class="container mx-auto max-w-7xl px-4 md:px-6">
-            <div class="mb-8">
-                <a href="{{ route('course.section', ['level' => $level, 'sectionType' => 'luyen_doc']) }}" class="inline-flex items-center text-gray-700 hover:text-gray-900 transition mb-6 group font-medium">
-                    <svg class="w-5 h-5 mr-1 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <main>
+        <section class="border-b border-slate-200 bg-white">
+            <div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+                <a href="{{ route('course.section', ['level' => $level, 'sectionType' => 'luyen_doc']) }}" class="inline-flex items-center text-sm font-bold text-slate-600 hover:text-slate-950">
+                    <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                    <span>Quay lại Luyện đọc</span>
+                    Luyện đọc
                 </a>
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 text-center">
-                    {{ $item->title }}
-                </h1>
-                <p class="text-center text-gray-600 text-base md:text-lg">{{ $item->bai }}</p>
+                <p class="mt-5 text-sm font-bold text-red-600">{{ $item->bai }}</p>
+                <h1 class="mt-1 break-words text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{{ $item->title }}</h1>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Content Section -->
-    <section class="py-12">
-        <div class="container mx-auto max-w-5xl px-4 md:px-6 lg:px-8">
-            @php $content = $item->content; @endphp
-            <div class="bg-white rounded-lg shadow-md p-6 md:p-8 lg:p-10">
-                
+        <section class="py-6 sm:py-8">
+            <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                @php $content = $item->content; @endphp
+
                 @if(isset($content['passage']))
-                    <div class="mb-8 p-5 md:p-6 lg:p-8 bg-blue-50 rounded-lg border border-blue-200">
-                        <h4 class="text-lg md:text-xl font-semibold text-gray-900 mb-4">Đoạn văn:</h4>
-                        <p class="japanese-text text-base md:text-lg lg:text-xl text-gray-800 leading-relaxed whitespace-pre-wrap break-words">{{ $content['passage'] }}</p>
+                    <div class="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4 sm:p-6">
+                        <h2 class="text-sm font-black uppercase tracking-wide text-slate-700">Đoạn văn</h2>
+                        <p class="japanese-text mt-4 whitespace-pre-wrap text-base text-slate-800 sm:text-lg">{{ $content['passage'] }}</p>
                     </div>
                 @endif
-                
+
                 @if(isset($content['questions']) && is_array($content['questions']))
-                    <div class="space-y-8">
+                    <div class="space-y-4">
                         @foreach($content['questions'] as $questionIndex => $question)
-                            <div class="border-t border-gray-200 pt-8">
-                                <div class="mb-6">
-                                    <h4 class="text-lg md:text-xl font-semibold text-gray-900 mb-2">
-                                        <span class="text-red-600">{{ $question['question_number'] ?? '' }}</span>: {{ $question['question'] ?? '' }}
-                                    </h4>
-                                </div>
-                                
+                            <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                                <h2 class="break-words text-base font-black text-slate-950 sm:text-lg">
+                                    <span class="text-red-600">{{ $question['question_number'] ?? 'Câu ' . ($questionIndex + 1) }}</span>
+                                    {{ $question['question'] ?? '' }}
+                                </h2>
+
                                 @if(isset($question['options']) && is_array($question['options']))
-                                    <div class="space-y-4 mb-6">
+                                    <div class="mt-4 space-y-3">
                                         @foreach($question['options'] as $index => $option)
-                                            <div class="p-4 md:p-5 rounded-lg border-2 transition {{ isset($question['correct_answer']) && $question['correct_answer'] == $index ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm' }}">
-                                                <div class="flex items-start gap-4">
-                                                    <span class="font-bold text-gray-700 text-lg mt-0.5 flex-shrink-0">{{ chr(65 + $index) }}.</span>
+                                            <div class="rounded-lg border p-4 {{ isset($question['correct_answer']) && $question['correct_answer'] == $index ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-slate-50' }}">
+                                                <div class="flex items-start gap-3">
+                                                    <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-sm font-black text-slate-700">{{ chr(65 + $index) }}</span>
                                                     <div class="flex-1 min-w-0">
-                                                        <div class="japanese-text text-base md:text-lg mb-2 break-words">{{ $option['text'] ?? '' }}</div>
+                                                        <div class="japanese-text break-words text-base text-slate-900 sm:text-lg">{{ $option['text'] ?? '' }}</div>
                                                         @if(isset($option['romaji']))
-                                                            <div class="text-sm md:text-base text-gray-600 mb-1 italic">({{ $option['romaji'] }})</div>
+                                                            <div class="mt-1 text-sm italic text-slate-500">({{ $option['romaji'] }})</div>
                                                         @endif
                                                         @if(isset($option['meaning']))
-                                                            <div class="text-sm md:text-base text-gray-700 font-medium">{{ $option['meaning'] }}</div>
+                                                            <div class="mt-1 text-sm font-semibold text-slate-700">{{ $option['meaning'] }}</div>
                                                         @endif
                                                     </div>
                                                     @if(isset($question['correct_answer']) && $question['correct_answer'] == $index)
-                                                        <span class="text-green-600 font-bold text-xl flex-shrink-0">✓</span>
+                                                        <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-600 text-white" aria-label="Đáp án đúng">
+                                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                                            </svg>
+                                                        </span>
                                                     @endif
                                                 </div>
                                             </div>
                                         @endforeach
                                     </div>
                                 @endif
-                                
+
                                 @if(isset($question['explanation']))
-                                    <div class="mt-6 p-5 bg-yellow-50 rounded-lg border border-yellow-200">
-                                        <h5 class="font-semibold text-gray-900 mb-2 text-base md:text-lg">Giải thích:</h5>
-                                        <p class="text-gray-700 text-sm md:text-base leading-relaxed">{{ $question['explanation'] }}</p>
+                                    <div class="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                                        <h3 class="font-black text-slate-950">Giải thích</h3>
+                                        <p class="mt-2 text-sm leading-6 text-slate-700 sm:text-base">{{ $question['explanation'] }}</p>
                                     </div>
                                 @endif
-                            </div>
+                            </article>
                         @endforeach
                     </div>
                 @endif
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     @include('layouts.footer')
 </body>
 </html>
-

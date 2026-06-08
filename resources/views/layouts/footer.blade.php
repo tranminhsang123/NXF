@@ -7,8 +7,8 @@
         <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
     </div>
     
-    <div class="relative container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+    <div class="relative container mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">
+        <div class="mb-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10 lg:grid-cols-4 lg:gap-12">
             <!-- Brand Section -->
             <div class="lg:col-span-1">
                 <div class="flex items-center space-x-3 mb-6">
@@ -143,12 +143,12 @@
         </div>
         
         <!-- Bottom Bar -->
-        <div class="border-t border-gray-700 pt-8 mt-8">
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <p class="text-gray-400 text-sm">
+        <div class="mt-8 border-t border-gray-700 pt-8">
+            <div class="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
+                <p class="text-sm text-gray-400">
                     &copy; {{ date('Y') }} <span class="text-white font-semibold">日本語</span> Học Tiếng Nhật. Tất cả quyền được bảo lưu.
                 </p>
-                <div class="flex space-x-6 text-sm">
+                <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm md:justify-end">
                     <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Chính sách bảo mật</a>
                     <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Điều khoản sử dụng</a>
                 </div>

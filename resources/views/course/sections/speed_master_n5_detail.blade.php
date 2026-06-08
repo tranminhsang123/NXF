@@ -13,52 +13,48 @@
         }
         .japanese-text {
             font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
-            font-size: 1.2em;
+            line-height: 1.75;
+            overflow-wrap: break-word;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50 text-slate-900">
     @include('layouts.header')
 
-    <!-- Hero Section -->
-    <section class="pt-24 pb-12 {{ $courseData['bgColor'] }}">
-        <div class="container mx-auto max-w-7xl px-4 md:px-6">
-            <div class="mb-8">
-                <a href="{{ route('course.section', ['level' => $level, 'sectionType' => 'speed_master_n5']) }}" class="inline-flex items-center text-gray-700 hover:text-gray-900 transition mb-6 group font-medium">
-                    <svg class="w-5 h-5 mr-1 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <main>
+        <section class="border-b border-slate-200 bg-white">
+            <div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+                <a href="{{ route('course.section', ['level' => $level, 'sectionType' => 'speed_master_n5']) }}" class="inline-flex items-center text-sm font-bold text-slate-600 hover:text-slate-950">
+                    <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                    <span>Quay lại Speed Master N5</span>
+                    Speed Master N5
                 </a>
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 text-center">
-                    {{ $bai }}: {{ $title }}
-                </h1>
+                <p class="mt-5 text-sm font-bold text-red-600">{{ $bai }}</p>
+                <h1 class="mt-1 break-words text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{{ $title }}</h1>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Content Section -->
-    <section class="py-12">
-        <div class="container mx-auto max-w-5xl px-4 md:px-6 lg:px-8">
-            <!-- Tabs for different sections -->
-            <div class="mb-6 border-b border-gray-200 overflow-x-auto">
-                <nav class="-mb-px flex space-x-4 md:space-x-8 min-w-max">
-                    <button onclick="showSection('tuVung')" class="section-tab active border-b-2 border-red-600 py-3 md:py-4 px-2 md:px-1 text-sm font-medium text-red-600 whitespace-nowrap">
+        <section class="py-6 sm:py-8">
+            <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div class="mb-4 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                    <nav class="flex min-w-max gap-2">
+                    <button onclick="showSection('tuVung', this)" class="section-tab active rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm">
                         Từ vựng
                     </button>
-                    <button onclick="showSection('nguPhap')" class="section-tab border-b-2 border-transparent py-3 md:py-4 px-2 md:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap">
+                    <button onclick="showSection('nguPhap', this)" class="section-tab rounded-lg px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-950">
                         Ngữ pháp
                     </button>
-                    <button onclick="showSection('docHieu')" class="section-tab border-b-2 border-transparent py-3 md:py-4 px-2 md:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap">
+                    <button onclick="showSection('docHieu', this)" class="section-tab rounded-lg px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-950">
                         Đọc hiểu
                     </button>
-                    <button onclick="showSection('ngheHieu')" class="section-tab border-b-2 border-transparent py-3 md:py-4 px-2 md:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap">
+                    <button onclick="showSection('ngheHieu', this)" class="section-tab rounded-lg px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-950">
                         Nghe hiểu
                     </button>
                 </nav>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 md:p-8 lg:p-10">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
                 <!-- Từ vựng Section -->
                 <div id="tuVung" class="section-content active">
                     @php
@@ -66,8 +62,8 @@
                     @endphp
                     
                     @if(!$tuVungData)
-                        <div class="bg-gray-50 rounded-lg p-8 text-center">
-                            <p class="text-gray-500">Chưa có dữ liệu từ vựng cho bài này</p>
+                        <div class="rounded-lg bg-slate-50 p-8 text-center">
+                            <p class="text-slate-500">Chưa có dữ liệu từ vựng cho bài này</p>
                         </div>
                     @else
                         @php 
@@ -77,22 +73,22 @@
                         @if(!empty($words))
                             <div class="mt-4">
                                 <!-- Desktop Table View -->
-                                <div class="hidden md:block overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-gray-200">
+                                <div class="hidden overflow-x-auto rounded-xl border border-slate-200 md:block">
+                                    <table class="min-w-full divide-y divide-slate-200">
                                         <thead class="bg-red-50">
                                             <tr>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Từ vựng</th>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Nghĩa</th>
+                                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Từ vựng</th>
+                                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-700">Nghĩa</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="bg-white divide-y divide-gray-200">
+                                        <tbody class="divide-y divide-slate-200 bg-white">
                                             @foreach($words as $word)
                                                 <tr class="hover:bg-gray-50">
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                        <span class="japanese-text text-lg">{{ $word['tu'] ?? '' }}</span>
+                                                    <td class="px-6 py-4">
+                                                        <span class="japanese-text text-lg font-semibold">{{ $word['tu'] ?? '' }}</span>
                                                     </td>
                                                     <td class="px-6 py-4">
-                                                        <span class="text-gray-900">{{ $word['nghia'] ?? '' }}</span>
+                                                        <span class="text-slate-900">{{ $word['nghia'] ?? '' }}</span>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -101,13 +97,13 @@
                                 </div>
 
                                 <!-- Mobile Card View -->
-                                <div class="md:hidden space-y-3">
+                                <div class="space-y-3 md:hidden">
                                     @foreach($words as $word)
-                                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                            <div class="japanese-text text-lg font-semibold text-gray-900 mb-1">
+                                        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                            <div class="japanese-text mb-1 text-lg font-black text-slate-950">
                                                 {{ $word['tu'] ?? '' }}
                                             </div>
-                                            <div class="text-gray-700">
+                                            <div class="text-slate-700">
                                                 {{ $word['nghia'] ?? '' }}
                                             </div>
                                         </div>
@@ -125,8 +121,8 @@
                     @endphp
                     
                     @if(!$nguPhapData)
-                        <div class="bg-gray-50 rounded-lg p-8 text-center">
-                            <p class="text-gray-500">Chưa có dữ liệu ngữ pháp cho bài này</p>
+                        <div class="rounded-lg bg-slate-50 p-8 text-center">
+                            <p class="text-slate-500">Chưa có dữ liệu ngữ pháp cho bài này</p>
                         </div>
                     @else
                         @php 
@@ -136,20 +132,20 @@
                         @if(!empty($grammarPoints))
                             <div class="space-y-6">
                                 @foreach($grammarPoints as $grammar)
-                                    <div class="border-l-4 border-red-600 pl-6 py-4 bg-gray-50 rounded-r-lg">
-                                        <h4 class="text-xl font-bold text-gray-900 mb-2">{{ $grammar['particle'] ?? '' }}</h4>
+                                    <div class="rounded-r-lg border-l-4 border-red-600 bg-slate-50 py-4 pl-4 pr-3 sm:pl-6">
+                                        <h4 class="mb-2 break-words text-lg font-black text-slate-950 sm:text-xl">{{ $grammar['particle'] ?? '' }}</h4>
                                         
                                         @if(isset($grammar['explanation']))
-                                            <p class="text-gray-700 mb-4">{{ $grammar['explanation'] }}</p>
+                                            <p class="mb-4 text-sm leading-6 text-slate-700 sm:text-base">{{ $grammar['explanation'] }}</p>
                                         @endif
                                         
                                         @if(isset($grammar['examples']) && is_array($grammar['examples']))
                                             <div class="space-y-3">
-                                                <h5 class="font-semibold text-gray-700 mb-2">Ví dụ:</h5>
+                                                <h5 class="mb-2 font-black text-slate-700">Ví dụ</h5>
                                                 @foreach($grammar['examples'] as $example)
-                                                    <div class="bg-white p-4 rounded-lg border border-gray-200">
-                                                        <div class="japanese-text text-lg mb-2">{{ $example['japanese'] ?? '' }}</div>
-                                                        <div class="text-gray-700">{{ $example['vietnamese'] ?? '' }}</div>
+                                                    <div class="rounded-lg border border-slate-200 bg-white p-4">
+                                                        <div class="japanese-text mb-2 text-base text-slate-950 sm:text-lg">{{ $example['japanese'] ?? '' }}</div>
+                                                        <div class="text-sm text-slate-700 sm:text-base">{{ $example['vietnamese'] ?? '' }}</div>
                                                     </div>
                                                 @endforeach
                                             </div>
@@ -168,8 +164,8 @@
                     @endphp
                     
                     @if($docHieuData->isEmpty())
-                        <div class="bg-gray-50 rounded-lg p-8 text-center">
-                            <p class="text-gray-500">Chưa có dữ liệu đọc hiểu cho bài này</p>
+                        <div class="rounded-lg bg-slate-50 p-8 text-center">
+                            <p class="text-slate-500">Chưa có dữ liệu đọc hiểu cho bài này</p>
                         </div>
                     @else
                         <div class="space-y-8">
@@ -177,36 +173,36 @@
                                 @php $content = $item->content; @endphp
                                 <div>
                                     @if(isset($content['passage']))
-                                        <div class="mb-6 p-4 md:p-6 bg-blue-50 rounded-lg border border-blue-200">
-                                            <h4 class="font-semibold text-gray-900 mb-3">Đoạn văn:</h4>
-                                            <p class="japanese-text text-base md:text-lg text-gray-800 leading-relaxed whitespace-pre-wrap break-words">{{ $content['passage'] }}</p>
+                                        <div class="mb-6 rounded-lg border border-blue-100 bg-blue-50 p-4 sm:p-6">
+                                            <h4 class="mb-3 font-black text-slate-950">Đoạn văn</h4>
+                                            <p class="japanese-text whitespace-pre-wrap text-base text-slate-800 sm:text-lg">{{ $content['passage'] }}</p>
                                         </div>
                                     @endif
                                     
                                     @if(isset($content['question']))
                                         <div class="mb-4">
-                                            <h4 class="font-semibold text-gray-900 mb-3">Câu hỏi:</h4>
-                                            <p class="text-lg text-gray-800">{{ $content['question'] }}</p>
+                                            <h4 class="mb-3 font-black text-slate-950">Câu hỏi</h4>
+                                            <p class="text-base font-semibold text-slate-800 sm:text-lg">{{ $content['question'] }}</p>
                                         </div>
                                     @endif
                                     
                                     @if(isset($content['options']) && is_array($content['options']))
                                         <div class="space-y-3 mb-4">
                                             @foreach($content['options'] as $index => $option)
-                                                <div class="p-4 rounded-lg border-2 transition {{ isset($content['correct_answer']) && $content['correct_answer'] == $index ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                                                <div class="rounded-lg border p-4 {{ isset($content['correct_answer']) && $content['correct_answer'] == $index ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-slate-50' }}">
                                                     <div class="flex items-start gap-3">
-                                                        <span class="font-bold text-gray-700 mt-1">{{ $index + 1 }}.</span>
+                                                        <span class="mt-1 font-bold text-slate-700">{{ $index + 1 }}.</span>
                                                         <div class="flex-1">
-                                                            <div class="japanese-text text-lg mb-1">{{ $option['text'] ?? '' }}</div>
+                                                            <div class="japanese-text mb-1 text-base text-slate-950 sm:text-lg">{{ $option['text'] ?? '' }}</div>
                                                             @if(isset($option['romaji']))
-                                                                <div class="text-sm text-gray-600">({{ $option['romaji'] }})</div>
+                                                                <div class="text-sm text-slate-500">({{ $option['romaji'] }})</div>
                                                             @endif
                                                             @if(isset($option['meaning']))
-                                                                <div class="text-sm text-gray-700">{{ $option['meaning'] }}</div>
+                                                                <div class="text-sm text-slate-700">{{ $option['meaning'] }}</div>
                                                             @endif
                                                         </div>
                                                         @if(isset($content['correct_answer']) && $content['correct_answer'] == $index)
-                                                            <span class="text-green-600 font-bold">✓ Đúng</span>
+                                                            <span class="shrink-0 rounded-full bg-green-600 px-2.5 py-1 text-xs font-bold text-white">Đúng</span>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -215,9 +211,9 @@
                                     @endif
                                     
                                     @if(isset($content['explanation']))
-                                        <div class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                                            <h5 class="font-semibold text-gray-900 mb-2">Giải thích:</h5>
-                                            <p class="text-gray-700">{{ $content['explanation'] }}</p>
+                                        <div class="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                                            <h5 class="mb-2 font-black text-slate-950">Giải thích</h5>
+                                            <p class="text-sm leading-6 text-slate-700 sm:text-base">{{ $content['explanation'] }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -233,27 +229,28 @@
                     @endphp
                     
                     @if($ngheHieuData->isEmpty())
-                        <div class="bg-gray-50 rounded-lg p-8 text-center">
-                            <p class="text-gray-500">Chưa có dữ liệu nghe hiểu cho bài này</p>
+                        <div class="rounded-lg bg-slate-50 p-8 text-center">
+                            <p class="text-slate-500">Chưa có dữ liệu nghe hiểu cho bài này</p>
                         </div>
                     @else
                         <div class="space-y-8">
                             @foreach($ngheHieuData as $item)
                                 <div>
-                                    <p class="text-gray-600">Phần nghe hiểu - cần audio để học</p>
+                                    <p class="text-slate-600">Phần nghe hiểu - cần audio để học</p>
                                 </div>
                             @endforeach
                         </div>
                     @endif
                 </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     @include('layouts.footer')
 
     <script>
-        function showSection(sectionId) {
+        function showSection(sectionId, tabElement) {
             // Hide all sections
             document.querySelectorAll('.section-content').forEach(section => {
                 section.classList.add('hidden');
@@ -262,8 +259,8 @@
             
             // Remove active class from all tabs
             document.querySelectorAll('.section-tab').forEach(tab => {
-                tab.classList.remove('active', 'border-red-600', 'text-red-600');
-                tab.classList.add('border-transparent', 'text-gray-500');
+                tab.classList.remove('active', 'bg-red-600', 'text-white', 'shadow-sm');
+                tab.classList.add('text-slate-600');
             });
             
             // Show selected section
@@ -271,10 +268,9 @@
             document.getElementById(sectionId).classList.add('active');
             
             // Add active class to clicked tab
-            event.target.classList.add('active', 'border-red-600', 'text-red-600');
-            event.target.classList.remove('border-transparent', 'text-gray-500');
+            tabElement.classList.add('active', 'bg-red-600', 'text-white', 'shadow-sm');
+            tabElement.classList.remove('text-slate-600');
         }
     </script>
 </body>
 </html>
-

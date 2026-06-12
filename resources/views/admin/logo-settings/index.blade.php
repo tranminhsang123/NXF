@@ -1,5 +1,7 @@
 @extends('adminlayout.app')
 
+@section('admin_title', 'Cài đặt')
+
 @section('content')
 <div class="space-y-7">
     <div class="rounded-2xl border border-gray-200 bg-gradient-to-r from-white to-gray-50 px-6 py-5 shadow-sm">
@@ -132,6 +134,133 @@
                     @method('DELETE')
                 </form>
             @endif
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
+        <div class="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-start">
+            <div>
+                <p class="text-xs uppercase tracking-wider text-gray-500 font-bold">Mạng xã hội</p>
+                <h2 class="mt-1 text-xl font-black tracking-tight text-gray-900">CRUD link social ở footer</h2>
+                <p class="mt-1 text-sm text-gray-600">Quản lý icon, URL, thứ tự hiển thị và trạng thái bật/tắt cho các nút như Facebook, Twitter, Instagram, YouTube.</p>
+            </div>
+            <div class="flex gap-2 rounded-xl bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600">
+                <span>{{ $socialLinks->where('is_active', true)->count() }} đang bật</span>
+                <span class="text-gray-300">/</span>
+                <span>{{ $socialLinks->count() }} tổng</span>
+            </div>
+        </div>
+
+        <form action="{{ route('admin.social-links.store') }}" method="POST" class="mb-6 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4">
+            @csrf
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-12">
+                <label class="md:col-span-2">
+                    <span class="mb-1 block text-xs font-bold uppercase tracking-wide text-gray-500">Icon</span>
+                    <select name="platform" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                        @foreach($socialPlatforms as $value => $label)
+                            <option value="{{ $value }}" @selected(old('platform') === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </label>
+
+                <label class="md:col-span-2">
+                    <span class="mb-1 block text-xs font-bold uppercase tracking-wide text-gray-500">Tên</span>
+                    <input name="label" value="{{ old('label') }}" placeholder="Facebook" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                </label>
+
+                <label class="md:col-span-5">
+                    <span class="mb-1 block text-xs font-bold uppercase tracking-wide text-gray-500">URL</span>
+                    <input name="url" value="{{ old('url', '#') }}" placeholder="https://facebook.com/your-page" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                </label>
+
+                <label class="md:col-span-1">
+                    <span class="mb-1 block text-xs font-bold uppercase tracking-wide text-gray-500">Thứ tự</span>
+                    <input type="number" min="0" max="999" name="sort_order" value="{{ old('sort_order', 50) }}" class="w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                </label>
+
+                <label class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 md:col-span-1 md:self-end">
+                    <input type="checkbox" name="is_active" value="1" checked class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                    <span class="text-sm font-semibold text-gray-700">Bật</span>
+                </label>
+
+                <button type="submit" class="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-red-700 md:col-span-1 md:self-end">
+                    Thêm
+                </button>
+            </div>
+        </form>
+
+        @foreach($socialLinks as $socialLink)
+            <form id="social-link-update-{{ $socialLink->id }}" action="{{ route('admin.social-links.update', $socialLink) }}" method="POST">
+                @csrf
+                @method('PUT')
+            </form>
+            <form id="social-link-delete-{{ $socialLink->id }}" action="{{ route('admin.social-links.destroy', $socialLink) }}" method="POST" onsubmit="return confirm('Xóa liên kết {{ $socialLink->label }}?')">
+                @csrf
+                @method('DELETE')
+            </form>
+        @endforeach
+
+        <div class="overflow-x-auto rounded-2xl border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Preview</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Icon</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Tên</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">URL</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Thứ tự</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Bật</th>
+                        <th class="px-4 py-3 text-right text-xs font-bold uppercase tracking-wide text-gray-500">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    @forelse($socialLinks as $socialLink)
+                        <tr>
+                            <td class="px-4 py-3">
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-gray-300">
+                                    @include('components.social-icon', ['platform' => $socialLink->platform, 'class' => 'h-5 w-5'])
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <select name="platform" form="social-link-update-{{ $socialLink->id }}" class="min-w-36 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                                    @foreach($socialPlatforms as $value => $label)
+                                        <option value="{{ $value }}" @selected($socialLink->platform === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td class="px-4 py-3">
+                                <input name="label" form="social-link-update-{{ $socialLink->id }}" value="{{ $socialLink->label }}" class="min-w-32 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input name="url" form="social-link-update-{{ $socialLink->id }}" value="{{ $socialLink->url }}" class="min-w-80 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" min="0" max="999" name="sort_order" form="social-link-update-{{ $socialLink->id }}" value="{{ $socialLink->sort_order }}" class="w-24 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200">
+                            </td>
+                            <td class="px-4 py-3">
+                                <label class="inline-flex items-center gap-2">
+                                    <input type="checkbox" name="is_active" value="1" form="social-link-update-{{ $socialLink->id }}" @checked($socialLink->is_active) class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                    <span class="text-sm text-gray-600">{{ $socialLink->is_active ? 'Hiện' : 'Ẩn' }}</span>
+                                </label>
+                            </td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button type="submit" form="social-link-update-{{ $socialLink->id }}" class="rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white hover:bg-gray-700">
+                                        Lưu
+                                    </button>
+                                    <button type="submit" form="social-link-delete-{{ $socialLink->id }}" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-100">
+                                        Xóa
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-4 py-8 text-center text-sm text-gray-500">Chưa có link mạng xã hội nào.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 

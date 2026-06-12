@@ -312,6 +312,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'admin.rout
     Route::post('logo-settings', [App\Http\Controllers\Admin\LogoSettingController::class, 'store'])->name('logo-settings.store');
     Route::put('logo-settings', [App\Http\Controllers\Admin\LogoSettingController::class, 'update'])->name('logo-settings.update');
     Route::delete('logo-settings', [App\Http\Controllers\Admin\LogoSettingController::class, 'destroy'])->name('logo-settings.destroy');
+    Route::post('social-links', [App\Http\Controllers\Admin\SocialLinkController::class, 'store'])->name('social-links.store');
+    Route::put('social-links/{socialLink}', [App\Http\Controllers\Admin\SocialLinkController::class, 'update'])->name('social-links.update');
+    Route::delete('social-links/{socialLink}', [App\Http\Controllers\Admin\SocialLinkController::class, 'destroy'])->name('social-links.destroy');
     Route::get('security', [App\Http\Controllers\Admin\SecurityController::class, 'index'])->name('security.index');
     Route::post('security', [App\Http\Controllers\Admin\SecurityController::class, 'update'])->name('security.update');
     Route::get('system-health', [App\Http\Controllers\Admin\SystemHealthController::class, 'index'])->name('system-health.index');

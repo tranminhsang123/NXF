@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LogoSetting;
+use App\Models\SocialLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,6 +19,8 @@ class LogoSettingController extends Controller
         return view('admin.logo-settings.index', [
             'setting' => $setting,
             'currentLogoUrl' => LogoSetting::currentLogoUrl(),
+            'socialLinks' => SocialLink::query()->ordered()->get(),
+            'socialPlatforms' => SocialLink::platformLabels(),
         ]);
     }
 

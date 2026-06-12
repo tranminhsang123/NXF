@@ -8,9 +8,11 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
         .japanese-font {
             font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-            font-size: 2rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,6 +21,35 @@
             padding: 0;
             text-align: center;
             letter-spacing: 0;
+            line-height: 1;
+        }
+        .kana-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 0.375rem;
+        }
+        .kana-cell,
+        .kana-empty {
+            min-height: 3.15rem;
+            border-radius: 0.5rem;
+        }
+        .kana-cell {
+            padding: 0.35rem 0.2rem;
+        }
+        .kana-char {
+            font-size: clamp(1.35rem, 7vw, 1.95rem);
+        }
+        .kana-reading {
+            font-size: 0.68rem;
+            line-height: 1;
+        }
+        .romaji-cell {
+            min-height: 2.8rem;
+            padding: 0.35rem 0.25rem;
+        }
+        .romaji-text {
+            font-size: clamp(0.86rem, 3.8vw, 1.05rem);
+            line-height: 1.1;
         }
         /* Giới hạn mô tả tiếng Việt trong thẻ, tránh tràn khung */
         .kanji-desc {
@@ -42,45 +73,109 @@
         .drawing-canvas {
             touch-action: none; /* giúp vẽ trên mobile không bị cuộn trang */
         }
+        .stroke-preview-size {
+            width: min(7.75rem, 32vw);
+            height: min(7.75rem, 32vw);
+        }
+        .handwriting-box-size {
+            width: min(10rem, calc(100vw - 4rem));
+            height: min(10rem, calc(100vw - 4rem));
+        }
+        .alphabet-modal-shell {
+            max-height: 100svh;
+            max-height: 100dvh;
+        }
+        .alphabet-modal-scroll {
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem);
+        }
+        @media (max-height: 740px) {
+            .stroke-preview-size {
+                width: 6.5rem;
+                height: 6.5rem;
+            }
+            .handwriting-box-size {
+                width: 9rem;
+                height: 9rem;
+            }
+        }
+        @media (min-width: 640px) {
+            .kana-grid {
+                gap: 0.75rem;
+            }
+            .kana-cell,
+            .kana-empty {
+                min-height: 4rem;
+            }
+            .kana-cell {
+                padding: 0.75rem;
+            }
+            .kana-char {
+                font-size: 2rem;
+            }
+            .kana-reading {
+                font-size: 0.75rem;
+            }
+            .romaji-cell {
+                min-height: 4rem;
+                padding: 0.75rem;
+            }
+            .romaji-text {
+                font-size: 1.125rem;
+            }
+            .stroke-preview-size {
+                width: 11rem;
+                height: 11rem;
+            }
+            .handwriting-box-size {
+                width: 14rem;
+                height: 14rem;
+            }
+            .alphabet-modal-shell {
+                max-height: calc(100dvh - 2rem);
+            }
+            .alphabet-modal-scroll {
+                padding-bottom: 1.25rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-slate-50 min-h-screen flex flex-col text-slate-900">
     @include('layouts.header')
     
-    <div class="pt-24 p-8 flex-1">
+    <div class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <div class="container mx-auto max-w-7xl">
             <!-- Title -->
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-bold text-gray-900 mb-4">
+            <div class="mb-6 text-center sm:mb-8">
+                <h1 class="mb-3 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl">
                     Bảng chữ cái tiếng Nhật
                 </h1>
-                <p class="text-xl text-gray-600">
+                <p class="text-sm leading-6 text-slate-600 sm:text-base">
                     Học 3 bảng chữ cái cơ bản của tiếng Nhật
                 </p>
             </div>
             
             <!-- Tab Buttons -->
-            <div class="flex justify-center mb-12 gap-2 flex-wrap">
-                <button onclick="showContent('hiragana')" class="px-5 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition text-sm">
+            <div class="-mx-4 mb-6 flex justify-start gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:mb-8 sm:flex-wrap sm:justify-center sm:px-0">
+                <button onclick="showContent('hiragana')" class="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-700">
                     Hiragana
                 </button>
-                <button onclick="showContent('katakana')" class="px-5 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 transition text-sm">
+                <button onclick="showContent('katakana')" class="shrink-0 rounded-lg bg-yellow-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-yellow-600">
                     Katakana
                 </button>
-                <button onclick="showContent('romaji')" class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition text-sm">
+                <button onclick="showContent('romaji')" class="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700">
                     Romaji
                 </button>
-                <button onclick="showContent('kanji')" class="px-5 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition text-sm">
+                <button onclick="showContent('kanji')" class="shrink-0 rounded-lg bg-green-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-green-700">
                     Kanji
                 </button>
             </div>
             
             <!-- Content Sections -->
             <div id="hiragana" class="content-section">
-                <div class="bg-white rounded-3xl shadow-xl p-12">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
                     
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Bảng chữ cái Hiragana</h2>
-                    <div class="grid grid-cols-5 gap-3 max-w-2xl mx-auto">
+                    <h2 class="mb-5 text-center text-2xl font-black text-slate-950 sm:text-3xl">Bảng chữ cái Hiragana</h2>
+                    <div class="kana-grid mx-auto max-w-2xl">
                         @php
                             $hiraganaOrder = [
                                 'あ', 'い', 'う', 'え', 'お',
@@ -98,19 +193,19 @@
                         @endphp
                         @foreach($hiraganaOrder as $char)
                             @if($char === '')
-                                <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                             @else
                                 @php $charData = $hiraganaData->get($char); @endphp
                                 @if($charData)
-                                    <div class="char-card bg-red-50 p-4 rounded-lg border border-red-200 hover:shadow-md transition-all duration-300 h-16 flex flex-col justify-center items-center"
+                                    <div class="char-card kana-cell flex flex-col items-center justify-center border border-red-200 bg-red-50 transition-all duration-300 hover:shadow-md"
                                          data-char="{{ $charData->character }}"
                                          data-type="kana"
                                          data-reading="{{ $charData->romaji }}">
-                                        <div class="japanese-font text-red-700 mb-1 text-xl w-full flex justify-center items-center"><span>{{ $charData->character }}</span></div>
-                                        <div class="text-xs font-medium text-gray-600 w-full flex justify-center items-center"><span>{{ $charData->romaji }}</span></div>
+                                        <div class="japanese-font kana-char mb-1 text-red-700"><span>{{ $charData->character }}</span></div>
+                                        <div class="kana-reading flex w-full items-center justify-center font-semibold text-slate-600"><span>{{ $charData->romaji }}</span></div>
                                     </div>
                                 @else
-                                    <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                    <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                 @endif
                             @endif
                         @endforeach
@@ -119,9 +214,9 @@
             </div>
             
             <div id="katakana" class="content-section hidden">
-                <div class="bg-white rounded-3xl shadow-xl p-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Bảng chữ cái Katakana</h2>
-                    <div class="grid grid-cols-5 gap-3 max-w-2xl mx-auto">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+                    <h2 class="mb-5 text-center text-2xl font-black text-slate-950 sm:text-3xl">Bảng chữ cái Katakana</h2>
+                    <div class="kana-grid mx-auto max-w-2xl">
                         @php
                             $katakanaOrder = [
                                 'ア', 'イ', 'ウ', 'エ', 'オ',
@@ -139,19 +234,19 @@
                         @endphp
                         @foreach($katakanaOrder as $char)
                             @if($char === '')
-                                <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                             @else
                                 @php $charData = $katakanaData->get($char); @endphp
                                 @if($charData)
-                                    <div class="char-card bg-yellow-50 p-4 rounded-lg border border-yellow-200 hover:shadow-md transition-all duration-300 h-16 flex flex-col justify-center items-center"
+                                    <div class="char-card kana-cell flex flex-col items-center justify-center border border-yellow-200 bg-yellow-50 transition-all duration-300 hover:shadow-md"
                                          data-char="{{ $charData->character }}"
                                          data-type="kana"
                                          data-reading="{{ $charData->romaji }}">
-                                        <div class="japanese-font text-yellow-700 mb-1 text-xl w-full flex justify-center items-center"><span>{{ $charData->character }}</span></div>
-                                        <div class="text-xs font-medium text-gray-600 w-full flex justify-center items-center"><span>{{ $charData->romaji }}</span></div>
+                                        <div class="japanese-font kana-char mb-1 text-yellow-700"><span>{{ $charData->character }}</span></div>
+                                        <div class="kana-reading flex w-full items-center justify-center font-semibold text-slate-600"><span>{{ $charData->romaji }}</span></div>
                                     </div>
                                 @else
-                                    <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                    <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                 @endif
                             @endif
                         @endforeach
@@ -160,13 +255,13 @@
             </div>
             
             <div id="romaji" class="content-section hidden">
-                <div class="bg-white rounded-3xl shadow-xl p-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Bảng chữ cái Romaji</h2>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+                    <h2 class="mb-5 text-center text-2xl font-black text-slate-950 sm:text-3xl">Bảng chữ cái Romaji</h2>
                     
                     <!-- Seion (Âm cơ bản) -->
-                    <div class="mb-12">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Seion (Âm cơ bản)</h3>
-                        <div class="grid grid-cols-5 gap-3 max-w-2xl mx-auto">
+                    <div class="mb-8">
+                        <h3 class="mb-4 text-center text-xl font-black text-slate-800">Seion (Âm cơ bản)</h3>
+                        <div class="kana-grid mx-auto max-w-2xl">
                             @php
                                 $seionOrder = [
                                     'a', 'i', 'u', 'e', 'o',
@@ -184,15 +279,15 @@
                             @endphp
                             @foreach($seionOrder as $char)
                                 @if($char === '')
-                                    <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                    <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                 @else
                                     @php $charData = $seionData->get($char); @endphp
                                     @if($charData)
-                                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 hover:shadow-md transition-all duration-300 h-16 flex flex-col justify-center items-center">
-                                            <div class="text-lg font-bold text-blue-700 w-full flex justify-center items-center"><span>{{ $charData->character }}</span></div>
+                                        <div class="romaji-cell flex flex-col items-center justify-center rounded-lg border border-blue-200 bg-blue-50 transition-all duration-300 hover:shadow-md">
+                                            <div class="romaji-text flex w-full items-center justify-center font-black text-blue-700"><span>{{ $charData->character }}</span></div>
                                         </div>
                                     @else
-                                        <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                        <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                     @endif
                                 @endif
                             @endforeach
@@ -200,9 +295,9 @@
                     </div>
 
                     <!-- Dakuon (Âm đục) -->
-                    <div class="mb-12">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Dakuon (Âm đục)</h3>
-                        <div class="grid grid-cols-5 gap-3 max-w-2xl mx-auto">
+                    <div class="mb-8">
+                        <h3 class="mb-4 text-center text-xl font-black text-slate-800">Dakuon (Âm đục)</h3>
+                        <div class="kana-grid mx-auto max-w-2xl">
                             @php
                                 $dakuonOrder = [
                                     'ga', 'gi', 'gu', 'ge', 'go',
@@ -220,15 +315,15 @@
                             @endphp
                             @foreach($dakuonOrder as $char)
                                 @if($char === '')
-                                    <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                    <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                 @else
                                     @php $charData = $dakuonData->get($char); @endphp
                                     @if($charData)
-                                        <div class="bg-green-50 p-4 rounded-lg border border-green-200 hover:shadow-md transition-all duration-300 h-16 flex flex-col justify-center items-center">
-                                            <div class="text-lg font-bold text-green-700 w-full flex justify-center items-center"><span>{{ $charData->character }}</span></div>
+                                        <div class="romaji-cell flex flex-col items-center justify-center rounded-lg border border-green-200 bg-green-50 transition-all duration-300 hover:shadow-md">
+                                            <div class="romaji-text flex w-full items-center justify-center font-black text-green-700"><span>{{ $charData->character }}</span></div>
                                         </div>
                                     @else
-                                        <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                        <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                     @endif
                                 @endif
                             @endforeach
@@ -236,9 +331,9 @@
                     </div>
 
                     <!-- Yōon (Âm ghép) -->
-                    <div class="mb-12">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Yōon (Âm ghép)</h3>
-                        <div class="grid grid-cols-5 gap-3 max-w-4xl mx-auto">
+                    <div class="mb-8">
+                        <h3 class="mb-4 text-center text-xl font-black text-slate-800">Yōon (Âm ghép)</h3>
+                        <div class="kana-grid mx-auto max-w-4xl">
                             @php
                                 $yoonOrder = [
                                     'kya', 'kyu', 'kyo', '', '',
@@ -257,15 +352,15 @@
                             @endphp
                             @foreach($yoonOrder as $char)
                                 @if($char === '')
-                                    <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                    <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                 @else
                                     @php $charData = $yoonData->get($char); @endphp
                                     @if($charData)
-                                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200 hover:shadow-md transition-all duration-300 h-16 flex flex-col justify-center items-center">
-                                            <div class="text-lg font-bold text-purple-700 w-full flex justify-center items-center"><span>{{ $charData->character }}</span></div>
+                                        <div class="romaji-cell flex flex-col items-center justify-center rounded-lg border border-purple-200 bg-purple-50 transition-all duration-300 hover:shadow-md">
+                                            <div class="romaji-text flex w-full items-center justify-center font-black text-purple-700"><span>{{ $charData->character }}</span></div>
                                         </div>
                                     @else
-                                        <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200 h-16"></div>
+                                        <div class="kana-empty border border-slate-100 bg-slate-50"></div>
                                     @endif
                                 @endif
                         @endforeach
@@ -275,10 +370,10 @@
             </div>
             
             <div id="kanji" class="content-section hidden">
-                <div class="bg-white rounded-3xl shadow-xl p-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Chữ Kanji</h2>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+                    <h2 class="mb-5 text-center text-2xl font-black text-slate-950 sm:text-3xl">Chữ Kanji</h2>
                     <!-- Bộ chọn cấp độ (không render Kanji cho đến khi chọn) -->
-                    <div class="flex justify-center mb-8">
+                    <div class="mb-6 flex justify-center">
                         <div class="inline-flex rounded-full bg-gray-100 p-1 shadow-inner">
                             <button type="button" data-level="N5" class="kanji-pill px-5 py-2 text-sm font-semibold rounded-full text-gray-700 hover:bg-white">N5</button>
                             <button type="button" data-level="N4" class="kanji-pill px-5 py-2 text-sm font-semibold rounded-full text-gray-700 hover:bg-white">N4</button>
@@ -296,63 +391,84 @@
     </div>
     
     <!-- Modal luyện viết & phát âm -->
-    <div id="charModal" class="fixed inset-0 modal-backdrop hidden z-50 items-center justify-center px-4">
-        <div class="bg-white rounded-2xl max-w-md md:max-w-xl w-full p-6 md:p-8 relative shadow-2xl">
-            <button type="button"
-                    id="closeCharModal"
-                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
-                ✕
-            </button>
-
-            <!-- Nút qua lại -->
-            <button type="button" id="prevCharBtn"
-                    class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 transition disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Chữ trước">
-                ←
-            </button>
-            <button type="button" id="nextCharBtn"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 transition disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Chữ sau">
-                →
-            </button>
-
-            <div class="flex flex-col items-center text-center gap-4 md:gap-6">
-                <div id="modalCharText"
-                     class="japanese-font text-6xl md:text-7xl mt-2 mb-1 text-gray-900">
-                </div>
-                <div id="modalReading"
-                     class="text-sm text-gray-500 mb-1"></div>
-
-                <button type="button"
-                        id="playAudioBtn"
-                        class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-red-600 text-white text-sm font-semibold shadow hover:bg-red-700 transition">
-                    <span>Nghe phát âm</span>
+    <div id="charModal" class="fixed inset-0 modal-backdrop hidden z-50 items-end justify-center p-0 sm:items-center sm:p-4">
+        <div class="alphabet-modal-shell relative flex w-full flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:max-w-xl sm:rounded-2xl">
+            <div class="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200 px-3 py-2 sm:px-4 sm:py-2.5">
+                <button type="button" id="prevCharBtn"
+                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40 sm:h-10 sm:w-10"
+                        title="Chữ trước"
+                        aria-label="Chữ trước">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                    </svg>
                 </button>
 
-                <div class="mt-4 w-44 h-44 md:w-52 md:h-52 border border-gray-200 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden">
-                    <div id="strokeContainer" class="w-full h-full flex items-center justify-center text-xs text-gray-400">
-                        Đang tải thứ tự nét vẽ...
+                <p class="min-w-0 flex-1 truncate text-center text-sm font-black text-slate-950">Luyện chữ</p>
+
+                <button type="button" id="nextCharBtn"
+                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40 sm:h-10 sm:w-10"
+                        title="Chữ sau"
+                        aria-label="Chữ sau">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+
+                <button type="button"
+                        id="closeCharModal"
+                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 sm:h-10 sm:w-10"
+                        aria-label="Đóng">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="alphabet-modal-scroll overflow-y-auto px-4 py-3 sm:px-6 sm:py-5">
+                <div class="grid grid-cols-[minmax(0,1fr)_minmax(6.5rem,8rem)] items-center gap-3 sm:grid-cols-[minmax(0,1fr)_11rem] sm:gap-4">
+                    <div class="flex flex-col items-center text-center">
+                        <div id="modalCharText"
+                             class="japanese-font text-4xl text-slate-950 sm:text-6xl">
+                        </div>
+                        <div id="modalReading"
+                             class="mt-1 text-xs font-semibold text-slate-500 sm:text-sm"></div>
+
+                        <button type="button"
+                                id="playAudioBtn"
+                                class="mt-3 inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-xs font-bold text-white shadow transition hover:bg-red-700 sm:mt-4 sm:px-5 sm:text-sm">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5 6 9H3v6h3l5 4V5Z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+                            </svg>
+                            <span>Nghe</span>
+                        </button>
+                    </div>
+
+                    <div id="strokePanel" class="mx-auto flex stroke-preview-size items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                        <div id="strokeContainer" class="flex h-full w-full items-center justify-center text-center text-xs text-slate-400">
+                            Đang tải thứ tự nét vẽ...
+                        </div>
                     </div>
                 </div>
 
-                <div class="w-full mt-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div class="text-left">
-                            <p class="text-sm font-bold text-gray-900">Luyện viết tay</p>
-                            <p class="text-xs text-gray-500">Vẽ trong khung rồi bấm chấm điểm.</p>
+                <div class="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:mt-4 sm:p-4">
+                    <div class="mb-2 flex items-start justify-between gap-3 sm:mb-3">
+                        <div class="min-w-0 text-left">
+                            <p class="text-sm font-black text-slate-950">Luyện viết tay</p>
+                            <p class="text-xs leading-5 text-slate-500">Vẽ trong khung rồi bấm chấm điểm.</p>
                         </div>
-                        <span id="handwritingExpected" class="text-xs font-semibold text-gray-500"></span>
+                        <span id="handwritingExpected" class="shrink-0 text-xs font-bold text-slate-500"></span>
                     </div>
-                    <canvas id="handwritingCanvas" width="280" height="280" class="drawing-canvas mx-auto block h-56 w-56 rounded-xl border border-gray-300 bg-white"></canvas>
+                    <canvas id="handwritingCanvas" width="280" height="280" class="drawing-canvas handwriting-box-size mx-auto block rounded-xl border border-slate-300 bg-white"></canvas>
                     <div class="mt-3 flex justify-center gap-2">
-                        <button type="button" id="clearHandwriting" class="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-white">Xóa</button>
-                        <button type="button" id="scoreHandwriting" class="rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700">Chấm điểm</button>
+                        <button type="button" id="clearHandwriting" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50">Xóa</button>
+                        <button type="button" id="scoreHandwriting" class="rounded-lg bg-green-600 px-3 py-2 text-xs font-bold text-white hover:bg-green-700">Chấm điểm</button>
                     </div>
-                    <p id="handwritingResult" class="mt-3 min-h-5 text-sm font-semibold text-gray-700"></p>
+                    <p id="handwritingResult" class="mt-3 min-h-5 text-sm font-semibold text-slate-700"></p>
                 </div>
 
                 <a href="{{ route('minna.index') }}"
-                   class="mt-1 inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700 underline">
+                   class="mx-auto mt-4 inline-flex w-full items-center justify-center gap-1 text-xs font-semibold text-red-600 underline hover:text-red-700">
                     <span>Xem Hán tự trong Minna no Nihongo</span>
                 </a>
             </div>
@@ -409,17 +525,17 @@
 
             const slice = data; // hiển thị toàn bộ
 
-            let html = '<div class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">';
+            let html = '<div class="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 md:grid-cols-5 lg:grid-cols-6">';
             for (const item of slice) {
                 const reading = (item.on_reading || '') + (item.kun_reading ? ' ・ ' + item.kun_reading : '');
                 html += `
-                <div class="char-card p-3 sm:p-4 rounded-lg border hover:shadow-sm min-h-[84px] sm:min-h-[96px] flex flex-col justify-center items-center ${styles.card}"
+                <div class="char-card flex min-h-[74px] flex-col items-center justify-center rounded-lg border p-2 hover:shadow-sm sm:min-h-[92px] sm:p-3 ${styles.card}"
                      data-char="${item.character}"
                      data-type="kanji"
                      data-reading="${reading.replace(/"/g, '&quot;')}"
                      data-meaning="${(item.meaning || '').replace(/"/g, '&quot;')}">
-                    <div class="japanese-font text-2xl sm:text-3xl mb-1 ${styles.text} w-full flex justify-center items-center"><span>${item.character}</span></div>
-                    <div class="text-[11px] sm:text-xs text-gray-600 kanji-desc text-center w-full">${item.meaning ?? ''}</div>
+                    <div class="japanese-font mb-1 text-2xl sm:text-3xl ${styles.text}"><span>${item.character}</span></div>
+                    <div class="kanji-desc w-full text-center text-[10px] text-slate-600 sm:text-xs">${item.meaning ?? ''}</div>
                 </div>`;
             }
             html += '</div>';
@@ -446,6 +562,7 @@
         const modalReading = document.getElementById('modalReading');
         const playAudioBtn = document.getElementById('playAudioBtn');
         const closeModalBtn = document.getElementById('closeCharModal');
+        const strokePanel = document.getElementById('strokePanel');
         const strokeContainer = document.getElementById('strokeContainer');
         const handwritingCanvas = document.getElementById('handwritingCanvas');
         const clearHandwritingBtn = document.getElementById('clearHandwriting');
@@ -587,7 +704,7 @@
             const expected = getExpectedStrokeCount();
             handwritingExpected.textContent = expected ? `Gợi ý: ${expected} nét` : 'Vẽ tự do';
             handwritingResult.textContent = '';
-            handwritingResult.className = 'mt-3 min-h-5 text-sm font-semibold text-gray-700';
+            handwritingResult.className = 'mt-3 min-h-5 text-sm font-semibold text-slate-700';
         }
 
         function scoreHandwriting() {
@@ -692,17 +809,15 @@
             };
 
             // Hiển thị GIF thứ tự nét vẽ
-            const strokeContainerParent = strokeContainer.closest('.mt-4');
-            
             if (type === 'kanji') {
                 // Kanji: ẩn hoàn toàn phần hiển thị GIF
-                if (strokeContainerParent) {
-                    strokeContainerParent.style.display = 'none';
+                if (strokePanel) {
+                    strokePanel.style.display = 'none';
                 }
             } else {
                 // Hiển thị lại container cho Kana
-                if (strokeContainerParent) {
-                    strokeContainerParent.style.display = 'block';
+                if (strokePanel) {
+                    strokePanel.style.display = 'flex';
                 }
                 
                 strokeContainer.innerHTML = '';
@@ -732,11 +847,11 @@
                     img.alt = 'Thứ tự nét vẽ ' + char;
                     img.className = 'w-full h-full object-contain';
                     img.onerror = function () {
-                        strokeContainer.innerHTML = '<span class="text-[11px] text-gray-400 px-3 text-center">Chưa có GIF nét vẽ cho chữ này.</span>';
+                        strokeContainer.innerHTML = '<span class="px-3 text-center text-[11px] text-slate-400">Chưa có GIF nét vẽ cho chữ này.</span>';
                     };
                     strokeContainer.appendChild(img);
                 } else {
-                    strokeContainer.innerHTML = '<span class="text-[11px] text-gray-400 px-3 text-center">Chưa có GIF nét vẽ cho chữ này.</span>';
+                    strokeContainer.innerHTML = '<span class="px-3 text-center text-[11px] text-slate-400">Chưa có GIF nét vẽ cho chữ này.</span>';
                 }
             }
 

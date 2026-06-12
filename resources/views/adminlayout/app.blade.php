@@ -10,6 +10,95 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background: #f6f7fb;
+            color: #111827;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .admin-page-shell {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .admin-sidebar-scroll a {
+            min-height: 42px;
+            margin: 0 12px 4px;
+            padding: 10px 14px !important;
+            border-left-width: 0 !important;
+            border-radius: 10px;
+            gap: 10px;
+            font-size: 14px;
+            line-height: 1.25;
+            transition: background-color .15s ease, color .15s ease, transform .15s ease, box-shadow .15s ease;
+        }
+
+        .admin-sidebar-scroll a:hover {
+            transform: translateX(2px);
+        }
+
+        .admin-sidebar-scroll a > .mr-3,
+        .admin-sidebar-scroll a > svg.mr-3 {
+            margin-right: 0 !important;
+        }
+
+        .admin-sidebar-scroll a[class*="bg-red-600"] {
+            background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+            color: #fff !important;
+            box-shadow: 0 10px 24px rgba(185, 28, 28, .22);
+        }
+
+        .admin-sidebar-scroll p {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            letter-spacing: .08em;
+        }
+
+        .admin-card {
+            border: 1px solid rgba(226, 232, 240, .9);
+            background: rgba(255, 255, 255, .96);
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+        }
+
+        .admin-card-hover {
+            transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+        }
+
+        .admin-card-hover:hover {
+            transform: translateY(-1px);
+            border-color: rgba(203, 213, 225, 1);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, .08);
+        }
+
+        .admin-icon-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #334155;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+            transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+        }
+
+        .admin-icon-button:hover {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+
+        @media (max-width: 767px) {
+            .admin-sidebar-scroll a {
+                min-height: 44px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 11px 13px !important;
+            }
         }
 
         .admin-sidebar-scroll {
@@ -151,7 +240,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-50 text-slate-900 antialiased">
     @if(session('show_admin_intro'))
     <div id="adminIntroModal" class="admin-intro-overlay">
         <div class="admin-intro-root">
@@ -186,7 +275,7 @@
 
     <!-- Sidebar -->
     <div class="flex min-h-screen">
-        <div id="adminSidebarOverlay" class="fixed inset-0 z-30 bg-black/40 hidden md:hidden"></div>
+        <div id="adminSidebarOverlay" class="fixed inset-0 z-30 hidden bg-slate-950/55 backdrop-blur-sm md:hidden"></div>
         @include('adminlayout.sidebar')
 
         <!-- Main Content -->
@@ -194,7 +283,7 @@
             @include('adminlayout.header')
 
             <!-- Content -->
-            <main class="p-4 md:p-6 lg:p-8">
+            <main class="admin-page-shell px-4 py-5 sm:px-5 md:px-8 md:py-8 lg:px-10">
                 @yield('content')
             </main>
         </div>

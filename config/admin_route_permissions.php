@@ -88,6 +88,9 @@ return [
         'admin.logo-settings.store' => 'settings.edit',
         'admin.logo-settings.update' => 'settings.edit',
         'admin.logo-settings.destroy' => 'settings.edit',
+        'admin.social-links.store' => 'settings.edit',
+        'admin.social-links.update' => 'settings.edit',
+        'admin.social-links.destroy' => 'settings.edit',
 
         'admin.system-logs.index' => 'system_logs.view',
 

@@ -8,6 +8,7 @@ use App\Models\LogoSetting;
 use App\Models\MinnaLesson;
 use App\Models\MinnaSection;
 use App\Models\N5CourseData;
+use App\Models\SocialLink;
 use App\Observers\AdminContentObserver;
 use App\Observers\AlphabetObserver;
 use App\Observers\KanjiObserver;
@@ -47,6 +48,14 @@ class AppServiceProvider extends ServiceProvider
             $view->with('siteLogoUrl', LogoSetting::currentLogoUrl());
             $view->with('siteLogoTitle', LogoSetting::currentTitle());
             $view->with('siteLogoSubtitle', LogoSetting::currentSubtitle());
+        });
+
+        View::composer('layouts.footer', function ($view) {
+            try {
+                $view->with('footerSocialLinks', SocialLink::activeOrdered());
+            } catch (\Throwable) {
+                $view->with('footerSocialLinks', collect());
+            }
         });
 
         Blade::if('adminCan', function (string $permission): bool {

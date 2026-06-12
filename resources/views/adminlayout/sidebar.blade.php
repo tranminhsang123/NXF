@@ -1,23 +1,26 @@
 <!-- Sidebar -->
-<aside id="adminSidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-gray-900 to-gray-950 min-h-screen text-white flex flex-col shadow-xl transform -translate-x-full transition-transform duration-200 ease-out md:translate-x-0">
-    <div class="p-6 shrink-0 border-b border-gray-800/80">
+<aside id="adminSidebar" class="fixed inset-y-0 left-0 z-40 flex min-h-screen w-[18rem] max-w-[86vw] -translate-x-full transform flex-col bg-slate-950 text-white shadow-2xl transition-transform duration-200 ease-out md:w-64 md:translate-x-0">
+    <div class="shrink-0 border-b border-white/10 p-4">
         <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold tracking-tight flex items-center gap-3">
-            <img
-                src="{{ $siteLogoUrl ?? asset('images/logo/yamato.jpg') }}"
-                alt="Logo admin"
-                class="w-9 h-9 rounded-lg object-cover ring-2 ring-white/20"
-            >
-            <span class="leading-none whitespace-nowrap">日本語 Admin</span>
+            <h1 class="flex min-w-0 items-center gap-3 text-base font-bold tracking-tight">
+                <img
+                    src="{{ $siteLogoUrl ?? asset('images/logo/yamato.jpg') }}"
+                    alt="Logo admin"
+                    class="h-10 w-10 rounded-lg object-cover ring-1 ring-white/20"
+                >
+                <span class="truncate leading-none whitespace-nowrap">日本語 Admin</span>
             </h1>
-            <button id="adminSidebarClose" type="button" class="md:hidden inline-flex items-center justify-center w-8 h-8 rounded bg-gray-800 hover:bg-gray-700 text-gray-200" aria-label="Đóng menu">
-                ✕
+            <button id="adminSidebarClose" type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-200 hover:bg-white/10 md:hidden" aria-label="Đóng menu">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12"></path>
+                    <path d="M18 6L6 18"></path>
+                </svg>
             </button>
         </div>
-        <p class="text-gray-400 text-sm mt-1">Hệ thống quản lý</p>
+        <p class="mt-1 text-sm text-slate-400">Hệ thống quản lý</p>
     </div>
 
-    <nav class="admin-sidebar-scroll mt-4 flex-1 min-h-0 overflow-y-auto py-2">
+    <nav class="admin-sidebar-scroll mt-3 min-h-0 flex-1 overflow-y-auto py-2">
         <p class="px-6 py-2 text-[11px] uppercase tracking-wider text-gray-500 font-semibold">Tổng quan</p>
         @adminCan('dashboard.view')
         <a href="{{ route('admin.dashboard') }}"
